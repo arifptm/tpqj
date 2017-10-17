@@ -69,7 +69,7 @@ class StudentController extends Controller
     public function show($slug)
     {
         $student = Student::with(['group', 'transaction'=>function($q){
-            $q->with('transactionType')->paginate(10);
+            $q->with('transactionType');
         }])->whereSlug($slug)->first();        
 
         $achievements = Achievement::with('stage')->whereStudent_id($student->id)->orderBy('stage_id','asc')->get();

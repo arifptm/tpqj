@@ -52,34 +52,6 @@
       </div>
     </div>
   </div>
-  <div class="col-md-5">
-    <div class="box box-primary">
-      <div class="box-header with-border"> 
-        <h3 class="box-title">Riwayat Transaksi</h3>
-        <span class="h3"><span class="label bg-black label-lg pull-right"><small>Total:</small> {{ number_format($student->transaction()->sum('amount'),0,',','.') }}</span></span>
-
-      </div>
-      <div class="box-body"> 
-        <table class="table table-bordered table-condensed">
-          <tr>
-            <th>Tanggal</th>
-            <th>Transaksi</th>
-            <th>Jumlah</th>
-          </tr>
-
-          @foreach($student->transaction as $transaction)
-            <tr>
-              <td>{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-M-y') }}</td>
-              <td>{{ $transaction->transactionType->name }} {{ $transaction->tuition_month ? \Carbon\Carbon::parse($transaction->tuition_month)->format('M Y') : '' }}</td>
-              <td>{{ number_format($transaction->amount,0,',','.') }}</td>
-            </tr>
-          @endforeach
-        </table>
-        {{ $student->transaction()->paginate(10)->links() }}
-        
-      </div>
-    </div>
-  </div>
 
    <div class="col-md-4">
     <div class="box box-primary">
@@ -108,6 +80,38 @@
       </div>
     </div>
   </div>
+
+
+  <div class="col-md-5">
+    <div class="box box-primary">
+      <div class="box-header with-border"> 
+        <h3 class="box-title">Riwayat Transaksi</h3>
+        <span class="h3"><span class="label bg-black label-lg pull-right"><small>Total:</small> {{ number_format($student->transaction()->sum('amount'),0,',','.') }}</span></span>
+
+      </div>
+      <div class="box-body"> 
+        <table class="table table-bordered table-condensed">
+          <tr>
+            <th>Tanggal</th>
+            <th>Transaksi</th>
+            <th>Jumlah</th>
+          </tr>
+
+          @foreach($student->transaction as $transaction)
+            <tr>
+              <td>{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-M-y') }}</td>
+              <td>{{ $transaction->transactionType->name }} {{ $transaction->tuition_month ? \Carbon\Carbon::parse($transaction->tuition_month)->format('M Y') : '' }}</td>
+              <td>{{ number_format($transaction->amount,0,',','.') }}</td>
+            </tr>
+          @endforeach
+        </table>
+        
+        
+      </div>
+    </div>
+  </div>
+
+
 
 </div>
 @endsection	

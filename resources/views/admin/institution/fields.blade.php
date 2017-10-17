@@ -1,11 +1,14 @@
 
-<div class="box-body">
 	<div class="row">
 		<div class="col-md-12">	
-
 			<div class="form-group">
 				{!! Form::label('established_date', 'Tanggal Berdiri', ['class'=>'control-label']) !!}
-				{!! Form::date('established_date', null, ['class' => 'form-control']) !!}
+				<div class="input-group date">
+                  	<div class="input-group-addon">
+                    	<i class="fa fa-calendar"></i>
+                  	</div>  
+					{!! Form::text('established_date', null, ['class' => 'form-control date datepicker']) !!}
+				</div>					
 				@if ($errors->has('established_date'))
 				    <div class="label label-danger">
 				        {{ $errors->first('established_date') }}
@@ -25,7 +28,7 @@
 
 			<div class="form-group">
 				{!! Form::label('region_id', 'Wilayah TPQ',['class'=>'control-label']) !!}
-				{!! Form::select('region_id', $regions, null, ['class' => 'form-control']) !!}
+				{!! Form::select('region_id', array('' => '-Silakan Pilih-') + $regions, null, ['class' => 'form-control']) !!}
 				@if ($errors->has('region_id'))
 				    <div class="label label-danger">
 				        {{ $errors->first('region_id') }}
@@ -35,7 +38,7 @@
 
 			<div class="form-group">
 				{!! Form::label('headmaster', 'Kepala TPQ',['class'=>'control-label']) !!}
-				{!! Form::select('headmaster', $persons, null, ['class' => 'form-control']) !!}
+				{!! Form::select('headmaster', $persons, null, ['class' => 'select2 form-control', 'style'=>'width: 100%;']) !!}
 				@if ($errors->has('headmaster'))
 				    <div class="label label-danger">
 				        {{ $errors->first('headmaster') }}
@@ -51,14 +54,8 @@
 				        {{ $errors->first('address') }}
 				    </div>
 				@endif
-			</div>			
-
+			</div>	
+			{{csrf_field()}}		
+			{!! Form::hidden('id',null, ['id'=>'id'] ) !!}
 		</div>
 	</div>
-</div>
-
-<div class="box-footer">
-	<div class="form-group">
-		{!! Form::submit('Simpan',  ['class' => 'btn btn-primary']) !!}
-	</div>
-</div>	

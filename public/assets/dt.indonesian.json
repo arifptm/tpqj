@@ -1,0 +1,22 @@
+{
+	"emptyTable":     "Tidak ada data!",
+	"info":           "_START_ - _END_ dari _TOTAL_ data",
+	"infoEmpty":      "0 data",
+	"infoFiltered":   "(Total _MAX_ data)",
+	"infoPostFix":    "",
+	"thousands":      ".",
+	"loadingRecords": "Loading...",
+	"processing":     "Sedang mencari...",
+	"search":         "Cari:",
+	"zeroRecords":    "Tidak ditemukan",
+	"paginate": {
+		"first":      "<<",
+		"last":       ">>",
+		"next":       ">",
+		"previous":   "<"
+	},
+	"aria": {
+		"sortAscending":  ": activate to sort column ascending",
+		"sortDescending": ": activate to sort column descending"
+	}
+}

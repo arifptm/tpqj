@@ -15,27 +15,38 @@
 @endsection
 
 @section('content-main')
+	<div class="row">  	
+		<div class="col-xs-12 col-md-8">
+          <div class="box box-success box-solid">
+            <div class="box-body">
+              Lembaga = {{ $institutions->count() }}
+            </div>          
+          </div>          
+        </div>
+
+    </div>
+
   <div class="row">
   	<div class="col-md-8">
 		  <div class="box">    
 		    <div class="box-body">
 		      <table class="table table-bordered">
 		        <tr>
-		          <th style="width: 50px">No</th>
+		          <th class="hidden-xs" style="width: 50px">No</th>
 		          <th >Nama Lembaga</th>
-		          <th>Kepala TPQ</th>
+		          <th class="hidden-xs">Kepala TPQ</th>
 		          <th>Wilayah</th>
 		        </tr>
 		        @if (count($institutions) > 0)
 		          @foreach ($institutions as $institution)
 		            <tr>
-		              <td>
+		              <td class="hidden-xs">
 		                {{ $loop->iteration }}
 		              </td>
 		              <td>
 		                <a href="/institutions/{{ $institution->slug }}"><strong>{{ $institution->name }}</strong></a>
 		              </td>
-		              <td>
+		              <td class="hidden-xs">
 		                {{ $institution->theheadmaster->name }}
 		              </td>
 		              <td>

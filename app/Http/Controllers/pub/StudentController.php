@@ -15,7 +15,12 @@ use App\Achievement;
 class StudentController extends Controller
 {
     public function index(){
-    	$students = Student::filtered()->with('institution', 'achievement','achievement.stage')->orderBy('fullname','asc')->paginate(20);
+    	$st = new Student;        
+        $students['tpqa_male'] = $st->whereGroup_id(1)->whereGender('L')->count();
+        $students['tpqa_female'] = $st->whereGroup_id(1)->whereGender('P')->count();        
+        $students['tpqd_male'] = $st->whereGroup_id(3)->whereGender('L')->count();
+        $students['tpqd_female'] = $st->whereGroup_id(3)->whereGender('P')->count();        
+
     	return view('public.student.index',['students'=>$students]);    	
 
     }

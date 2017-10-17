@@ -3,9 +3,7 @@
     $('input[type="checkbox"], input[type="radio"]').iCheck({
       checkboxClass: 'icheckbox_flat-purple',
       radioClass   : 'iradio_flat-purple'
-    });
-
-    
+    });    
 
     $('#spp').on('ifUnchecked', function(event){  
       if ($('#credit').val() == 'no')
@@ -33,6 +31,19 @@
       minViewMode: 1,
       format: 'mm-yyyy'
     });
+
+    $('.shared-modal').on('hidden.bs.modal', function(){
+      if ($(this).attr('id') == 'modal-edit-transaction'){
+        clearForm();
+      }
+    });
+
+    function clearForm(){
+      $('#myForm').find('input,textarea,select').not('[name=class_group_id],[name=transaction_type_id]').val('');
+      $('#myForm .select2').val(null).trigger("change");
+      $('#myForm').find('[name=class_group_id], [name=transaction_type_id]').iCheck('uncheck')   
+      $('.tuition_month_wrapper').hide();     
+    }
 
 
     /*
@@ -65,7 +76,7 @@
       $("#transaction_date").val(d+'-'+ m +'-'+y);      
             
       $('.modal-footer')
-        .html("<button id='submit-create' class='btn btn-primary pull-left btn-lg'>Simpan</button><button class='btn btn-default' data-dismiss='modal'>Batal</button>")
+        .html("<button id='submit-create' class='btn btn-primary pull-left btn-lg'>Simpan</button><button class='btn bg-olive pull-left btn-lg' data-dismiss='modal'>Batal</button>")
       $('#modal-create-transaction').modal('show');
     });
 
@@ -85,19 +96,17 @@
         processData: false,
 
         error: function(response){
-          console.log(response)
           var msg = response.responseJSON.errors;          
         },
 
         success: function(response){
-
-          // $('#students-data').DataTable().ajax.reload();
-          location.reload();
-          // $('.fullname, .nickname, .institution_id, .gender, .group_id' ).hide().parent().removeClass('has-error');      
-          clearForm();
-          
+          clearForm(); 
           $('#modal-create-transaction').modal('hide');
-          $('#ajaxmessage').html('Data santri <strong>' +response.fullname+ ' </strong> berhasil disimpan.').parent().show();          
+          
+
+          $('#ajaxmessage').html('Transaksi <strong>'+ response.new.transaction_type.name+'</strong> '+response.new.student.fullname+ ' berhasil disimpan.').parent().show();    
+           //$('#transaction-data').DataTable().ajax.reload();  
+           $datatable.ajax.reload();    
         }
       });
     });
@@ -114,13 +123,26 @@
       $('#datatitle').text('Edit data transaksi')
 
       $('#id').val($(this).data('id'));
-      $('#transaction_date').val($(this).data('transaction_date'));
-      $('#tuition_month').val($(this).data('tuition_month'));
+      $tr_date = $(this).data('transaction_date').split('-');
+      $('#transaction_date').val($tr_date[2]+'-'+$tr_date[1]+'-'+$tr_date[0]);
+      
+      $tuit_dt = $(this).data('tuition_month');
+      if ($tuit_dt == '0' ){
+        $('#tuition_month').val('');        
+      } else {
+        $tuit_dt = $tuit_dt.split('-');
+        $('#tuition_month').val($tuit_dt[1]+'-'+$tuit_dt[0]);
+      }
       
       var tr_value = $(this).data('transaction_type_id')
       $('input[name="transaction_type_id"][value='+tr_value+']').iCheck('check');
 
-      $('#student_id').val($(this).data('student_id')).trigger("change");
+      if(tr_value == 4 ){
+        $('.tuition_month_wrapper').slideDown();
+      }
+
+
+      $('#student_id').val($(this).data('student_id')).select2();
       var t_amount = $(this).data('amount')
       $('#amount').val(Math.abs(t_amount));
       $('#notes').val($(this).data('notes'));
@@ -135,15 +157,17 @@
         $('#credit').val('no');  
       }
 
-      if ($(this).data('class_group_id') == '1'){
+      if ($(this).data('class_group_id') == 1){
         $("#tpqa").iCheck('check');
-      } else if ($(this).data('class_group_id') == '3'){
+      } else if ($(this).data('class_group_id') == 3){
         $("#tpqd").iCheck('check');
+      } else if ($(this).data('class_group_id') == 5){
+        $("#non-santri").iCheck('check');
       }
 
       
       $('.modal-footer')
-      .html("<button id='submit-update' class='btn btn-primary pull-left btn-lg'>Update</button><button class='btn btn-default' data-dismiss='modal'>Batal</button>")
+      .html("<button id='submit-update' class='btn btn-primary pull-left btn-lg'>Update</button><button class='btn btn-lg pull-left bg-olive' data-dismiss='modal'>Batal</button>")
       $('#modal-edit-transaction').modal('show');      
     });
 
@@ -171,13 +195,10 @@
         },
 
         success: function(response) {   
-          //$('#persons-data').DataTable().ajax.reload();
-          console.log(response.input)
-          location.reload();
-          clearForm();
-          
+          $datatable.ajax.reload(); 
+          clearForm();                    
           $('#modal-edit-transaction').modal('hide');
-          $('#ajaxmessage').html('Data transaksi <strong>' +response.name+ ' </strong> berhasil diperbarui.').parent().slideDown();
+          $('#ajaxmessage').html('Data transaksi <strong>' +response.student.fullname+ ' </strong> berhasil diperbarui.').parent().slideDown();
         }
       });
     });
@@ -187,7 +208,7 @@
 
 
 
-/*
+    /*
      *
      * Delete Transaction
      *
@@ -206,25 +227,12 @@
           $('#ajaxmessage').text('Maaf, ada masalah, silakan kontak admin').slideDown();
           },            
           
-          success: function(data) {              
-            $('#ajaxmessage').html(data.message).parent().slideDown();
-            //$('#students-data').DataTable().ajax.reload();
-            location.reload();
+          success: function(data) {                          
+            $('#row-'+data.transaction.id).remove();
+            $('#ajaxmessage').html('Data transaksi berhasil dihapus.').parent().slideDown();            
           }
         });
       }
     });
-  
-    $('.shared-modal').on('hidden.bs.modal', function(){
-      if ($(this).attr('id') == 'modal-edit-transaction'){
-        clearForm();
-      }
-    });
-
-    function clearForm(){
-      $('#myForm').find('input,textarea,select').not('[name=class_group_id],[name=transaction_type_id]').val('');
-      $('#myForm .select2').val(null).trigger("change");
-      $('#myForm').find('[name=class_group_id], [name=transaction_type_id]').iCheck('uncheck')        
-    }
 
   </script>

@@ -1,5 +1,5 @@
-      <div class="modal fade shared-modal" role="dialog">
-      <div class="modal-dialog modal-lg">
+   <div class="modal fade shared-modal" role="dialog">
+      <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header bg-blue">
                <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -8,7 +8,7 @@
             
                <div class="modal-body">
                      <form id='myForm' role='form' >         
-                        @include('admin.transaction.fields') 
+                        @include('admin.institution.fields') 
                      </form> 
                </div>   
                <div class="modal-footer bg-blue">

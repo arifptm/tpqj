@@ -19,18 +19,68 @@ class InstitutionController extends Controller
         $this->middleware('can:manage-institution', ['except'=>['index','show']]);
         
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     
     public function index()
     {        
         $institutions = Institution::filtered()->with('region','theheadmaster','region.regionGroup')->orderBy('name','asc')->paginate(20);
-        return view('admin.institution.index', ['institutions'=>$institutions]);
+        $persons = Person::orderBy('name','asc')->pluck('name','id')->toArray();
+        $regions = Region::orderBy('name','asc')->pluck('name','id')->toArray();
+        return view('admin.institution.index', ['institutions'=>$institutions, 'persons'=>$persons, 'regions'=>$regions]);
     }
+
+
+    public function ajaxCreate(Request $request)
+    {
+        $input = $request->all();
+        
+        $est_date = explode('-', $request->established_date);        
+        $input['established_date'] = $est_date[2].'-'.$est_date[1].'-'.$est_date[0];
+
+        $e_date_dmy = $request->established_date;
+
+        $institution = Institution::create($input); 
+
+        return response()->json(['new' => $institution->load(['region','region.regionGroup','theheadmaster']), 'e_date_dmy'=>$e_date_dmy ]);
+    }    
+
+    public function ajaxUpdate(Request $request)
+    {
+        $institution = Institution::findOrFail($request->id);   
+
+        $input = $request->all();
+        
+        $est_date = explode('-', $request->established_date);        
+        $input['established_date'] = $est_date[2].'-'.$est_date[1].'-'.$est_date[0]; 
+
+        $e_date_dmy = $request->established_date;
+
+        $institution->update($input);
+
+        return response()->json(['new' => $institution->load(['region','region.regionGroup','theheadmaster']), 'e_date_dmy'=>$e_date_dmy]);
+    }      
+
+    public function ajaxDelete(Request $request)
+    {
+        $institution = Institution::findOrFail($request->id);
+        $institution->delete();
+        return response()->json(['institution'=>$institution]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Show the form for creating a new resource.

@@ -16,7 +16,10 @@
   <script src="/bower_components/AdminLTE/plugins/select2/select2.min.js"></script>
   <script src="/plugins/datepicker/js/bootstrap-datepicker.js"></script>
   <script src="/plugins/datepicker/locales/bootstrap-datepicker.id.min.js"></script>
+  @include('admin.transaction.datatables')
   @include('admin.transaction.ajax')
+
+
 
   <script src="/js/custom.js"></script>
   @endsection
@@ -30,71 +33,53 @@
 @endsection
 
 @section('content-main')
-  <div class="box">    
-    <div class="box-body">
-      <table class="table table-bordered" id="students-data">
-        <tr>
-          <th>#</th>
-          <th>Tanggal</th>
-          <th>Jenis transaksi</th>
-          <th>Nama</th>          
-          <th class="text-right">Jumlah</th>
-          <th>Keterangan</th>
-        </tr>
-        @foreach($transactions as $transaction)
-        <tr>
-          <td>
-            {{ $transaction->id }}
-          </td>
-          <td>
-            {{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-M-y') }}
-          </td>
-          <td>
-            <small>
-              @if($transaction->class_group_id == 1)
-                <span class="label bg-green disable">
-              @elseif($transaction->class_group_id == 3)
-                <span class="label bg-orange disable">
-              @endif
-              {{ $transaction->studentGroup->name }}</span>
-            </small> {{ $transaction->transactionType->name }} {{ $transaction->tuition_month ? \Carbon\Carbon::parse($transaction->tuition_month)->format('F Y') : ''}}
-          </td>
-          <td>
-            {{ $transaction->student->fullname }}
-          </td>
-          <td class="text-right">
-            Rp. {{ number_format($transaction->amount,0,',','.') }}
-          </td>
-          <td>
-            {{ $transaction->notes }}
-          </td> 
-            <td>
-              <div class='btn-group'>                
-                {!! Form::button('<i class="glyphicon glyphicon-edit"></i>' ,[
-                  'class'=> 'btn btn-default btn-xs',
-                  'id'=>'btn-modal-edit',
-                  'data-id' => $transaction->id,
-                  'data-transaction_date' => $transaction->transaction_date ? \Carbon\Carbon::parse($transaction->transaction_date)->format('d-m-Y') : '',
-                  'data-transaction_type_id' => $transaction->transaction_type_id,
-                  'data-student_id' => $transaction->student_id,
-                  'data-amount' => $transaction->amount,
-                  'data-notes' => $transaction->notes,
-                  'data-class_group_id' => $transaction->class_group_id,
-                  'data-tuition_month' => $transaction->tuition_month ? \Carbon\Carbon::parse($transaction->tuition_month)->format('m-Y') : '',
-                ]) !!}
-
-                {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['class' => 'btn btn-danger btn-xs', 'id'=>'btn-delete-transaction', 'data-id'=> $transaction->id ]) !!}
-              </div>
-              
-            </td>                   
-        </tr> 
-        @endforeach
-      </table>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="box">    
+        <div class="box-body">
+          <table class="table table-bordered" id="transactions-data">
+            <thead>
+            <tr>              
+              <th>Tanggal</th>          
+              <th>Transaksi</th>
+              <th>Nama</th>
+              <th>Jumlah</th>              
+              <th>Aksi</th>          
+            </tr>
+            </thead>
+          </table>
+        </div>        
+        <div class="box-footer clearfix">        
+        </div>
+      </div>
     </div>
-    
-    <div class="box-footer clearfix">      
+
+    <div class="col-md-4">
+      <div class="box">    
+        <div class="box-body">
+          <table class="table-bordered table">
+            <tr>
+              <th>Tanggal</th>
+              <th class="text-right">Jumlah Transaksi</th>
+              <th>Detil</th>
+            </tr>
+            @foreach ($transactions as $k=>$transaction)
+              <tr>
+                <td>{{ $k }}</td>
+                <td class="text-right">Rp. {{ number_format($transaction->sum('amount'),0,',','.') }}</td>
+                <td><button class="btn btn-xs btn-primary" id="show-tr" data-tdate="{{ $k }}"><i class="fa fa-eye transaction-list" "></i></button></td>            
+              </tr>
+            @endforeach
+          </table>
+
+          
+        </div>
+        <div class="box-footer clearfix">      
+        </div>
+      </div>
     </div>
   </div>
   @include('/admin/transaction/modal')
+
 
 @endsection

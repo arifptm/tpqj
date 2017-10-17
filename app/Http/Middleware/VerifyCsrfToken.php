@@ -15,6 +15,8 @@ class VerifyCsrfToken extends Middleware
         'admin/students/ajax/create',
         'admin/students/ajax/update',
         'admin/persons/ajax/create',
-        'admin/persons/ajax/update'        
+        'admin/persons/ajax/update',
+        'admin/institutions/ajax/create',
+        'admin/institutions/ajax/update'
     ];
 }

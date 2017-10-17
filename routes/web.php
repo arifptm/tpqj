@@ -79,6 +79,11 @@ Route::group(['prefix'=>'admin'], function() {
 	
 	
 	Route::resource('institutions', 'admin\InstitutionController');
+	
+	Route::post('institutions/ajax/update','admin\InstitutionController@ajaxUpdate');
+	Route::post('institutions/ajax/create','admin\InstitutionController@ajaxCreate');
+	Route::post('institutions/ajax/delete','admin\InstitutionController@ajaxDelete');
+
 	Route::get('institutions/{slug}','admin\InstitutionController@show');
 
 
@@ -99,6 +104,8 @@ Route::get('data/i-teachers','DashboardController@institutionTeacher');
 Route::get('data/i-students','DashboardController@institutionStudent');
 Route::get('data/i-achievements','DashboardController@institutionAchievement');
 
+Route::get('data/almaruf-transactions/{arg}','admin\AlmarufTransactionController@indexData');
+
 Route::get('pub/data/persons','pub\PersonController@dataIndex');	
 Route::get('pub/data/students','pub\StudentController@dataIndex');	
 Route::get('data/persons','admin\PersonController@data');
@@ -108,29 +115,31 @@ Route::get('coba', function(){
 });
 Route::post('upload','TesController@upload');
 
+//Route::get('tes','InstitutionController@tes');
 Route::get('tes','TesController@tes');
 
 
 Route::get('/setroles', function(){
-	//$user = App\User::find(12);
+
+//Bouncer::disallow('admin')->to(['manage-class_groups']);
 	
-	Bouncer::allow('user')->to([
-		'manage-persons',
-		'manage-students',
-		'manage-achievements'
-	]);
+	// Bouncer::allow('user')->to([
+	// 	'manage-persons',
+	// 	'manage-students',
+	// 	'manage-achievements'
+	// ]);
 
-	Bouncer::allow('admin')->to([
-		'manage-users',
-		'manage-class_groups',
-		'manage-institutions',
-		'manage-persons',
-		'manage-students',
-		'manage-achievements'
-	]);
+	// Bouncer::allow('admin')->to([
+	// 	'manage-users',
+	// 	'manage-class_groups',
+	// 	'manage-institutions',
+	// 	'manage-persons',
+	// 	'manage-students',
+	// 	'manage-achievements'
+	// ]);
 
-	App\User::find(13)->allow('manage-almaruf_transaction');
-	App\User::find(14)->assign('user');
+	 App\User::find(13)->disallow('manage-almaruf_transaction');
+	// App\User::find(14)->assign('user');
 
 
 	//Bouncer::allow('admin')->to('manage-institution');

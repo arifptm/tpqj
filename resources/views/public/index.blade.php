@@ -80,8 +80,8 @@
       var tpqa_ac_female = [];
       var tpqd_ac_male = [];
       var tpqd_ac_female = [];
-      var tpqa_na = [];
-      var tpqd_na = [];
+      //var tpqa_na = [];
+      //var tpqd_na = [];
       var datastudent = data.data_student;
 
       for(var i in datastudent) {
@@ -90,10 +90,10 @@
         tpqa_ac_female.push(datastudent[i].tpqa_ac_female);
         tpqd_ac_male.push(datastudent[i].tpqd_ac_male);
         tpqd_ac_female.push(datastudent[i].tpqd_ac_female);
-        tpqa_na.push(datastudent[i].tpqa_na * -1);
-        tpqd_na.push(datastudent[i].tpqd_na * -1);       
+        //tpqa_na.push(datastudent[i].tpqa_na * -1);
+        //tpqd_na.push(datastudent[i].tpqd_na * -1);       
       }  
-
+ 
       var chartdata2 = {
         labels: institution,
         datasets : [
@@ -109,12 +109,12 @@
           backgroundColor: '#DD4B39',                        
           data: tpqa_ac_female, 
         },
-        {
-          stack: 'Stack 1',
-          label: 'TPQA NA',
-          backgroundColor: '#333333',
-          data: tpqa_na, 
-        },
+        //{
+        //  stack: 'Stack 1',
+        //  label: 'TPQA NA',
+        //  backgroundColor: '#333333',
+        //  data: tpqa_na, 
+        //},
         {
           stack: 'Stack 2',
           label: 'TPQD - L',
@@ -127,12 +127,12 @@
           backgroundColor: '#F39C12',
           data: tpqd_ac_female, 
         },
-        {
-          stack: 'Stack 2',
-          label: 'TPQD NA',
-          backgroundColor: '#999999',
-          data: tpqd_na, 
-        }          
+        //{
+         // stack: 'Stack 2',
+         //label: 'TPQD NA',
+         // backgroundColor: '#999999',
+         // data: tpqd_na, 
+        //}          
         ]
       };   
 
@@ -143,7 +143,11 @@
         options: {
           responsive: true,
           legend: {
-            position: 'right',
+          //position: 'right',
+    		  display:true,
+    		    labels: {
+    		      boxWidth:20
+    		    }
           },                  
           scales: {
             yAxes: [{
@@ -190,7 +194,7 @@
 
         var ctx = $("#achievementChart");
         var barGraph = new Chart(ctx, {
-          type: 'bar',
+          type: 'horizontalBar',
           data: chartdata2,
           options: {
             responsive: true,
@@ -223,7 +227,7 @@
 
   @section('content-main')
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-md-6">
       <div class="box box-success">
         <div class="box-header with-border">
           <h3 class="box-title">Grafik Guru Qiraati DIY</h3>
@@ -235,14 +239,14 @@
           </div>
         </div>
         <div class="box-body">
-          <div class="chart">
-            <canvas id="teacherChart" style="height:320px"></canvas>
+          <div class="chart" >
+            <canvas id="teacherChart" style="height:320px;"></canvas>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-md-6">
       <div class="box box-success">
         <div class="box-header with-border">
           <h3 class="box-title">Grafik Santri Qiraati DIY</h3>
@@ -264,7 +268,7 @@
 
 
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-md-6">
       <div class="box box-success">
         <div class="box-header with-border">
           <h3 class="box-title">Grafik Prestasi Santri</h3>
@@ -282,7 +286,7 @@
       </div>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-md-6">
       <div class="box box-success">
         <div class="box-header with-border">
           <h3 class="box-title">Statistik</h3>
@@ -294,11 +298,11 @@
         </div>
         <div class="box-body">
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-xs-6 col-sm-3 col-md-6">
               <!-- small box -->
               <div class="small-box bg-aqua">
                 <div class="inner">
-                  <h3>{{ $institutions }}<!-- <sup style="font-size: 20px"> orang</sup></h3></h3> -->
+                  <h3>{{ $institutions }}</h3><!-- <sup style="font-size: 20px"> orang</sup></h3> -->
 
                   <p>Lembaga</p>
                 </div>
@@ -309,11 +313,11 @@
               </div>
             </div>
             <!-- ./col -->
-            <div class="col-sm-6">
+            <div class="col-xs-6 col-sm-3 col-md-6">
               <!-- small box -->
               <div class="small-box bg-green">
                 <div class="inner">
-                  <h3>{{ $students }}
+                  <h3>{{ $students }}</h3>
 
                   <p>Santri</p>
                 </div>
@@ -324,7 +328,7 @@
               </div>
             </div>
             <!-- ./col -->
-            <div class="col-sm-6">
+            <div class="col-xs-6 col-sm-3 col-md-6">
               <!-- small box -->
               <div class="small-box bg-yellow">
                 <div class="inner">
@@ -339,7 +343,7 @@
               </div>
             </div>
             <!-- ./col -->
-            <div class="col-sm-6">
+            <div class="col-xs-6 col-sm-3 col-md-6">
               <!-- small box -->
               <div class="small-box bg-red">
                 <div class="inner">

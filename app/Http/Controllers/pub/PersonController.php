@@ -14,7 +14,9 @@ use App\Person;
 class PersonController extends Controller
 {
 	public function index(){					
-		$persons = Person::with('mainInstitution','mainInstitution.region','extraInstitution')->orderBy('name','asc')->paginate(20);	
+		$ps = new Person;	
+        $persons['teachers'] = $ps->teacherFiltered()->count();
+        $persons['amanahs'] = $ps->nonTeacherFiltered()->count();
 		return view('public.person.index',['persons'=>$persons]);
 	}
 

@@ -51,6 +51,16 @@
    *
    */
   $datatable = $('#persons-data').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+      {
+        extend: 'excel',
+        exportOptions: {
+            columns: ':visible'
+        }
+      },
+      'colvis'
+    ],
     processing: true,
     serverSide: true,
     responsive: true,
