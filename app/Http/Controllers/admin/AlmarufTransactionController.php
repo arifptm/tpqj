@@ -16,7 +16,11 @@ use App\ClassGroup;
 class AlmarufTransactionController extends Controller
 {
     public function index(){
-    	$transactions = AlmarufTransaction::where('created_at','>=', Carbon::now()->subMonth() )->orderBy('created_at','desc')->with('student','studentGroup', 'transactionType')->get()->groupBy(function($item, $key){ return $item->created_at->format('d-m-Y');});
+    	$trans = new AlmarufTransaction; 
+        $transactions = $trans->where('created_at','>=', Carbon::now()->subMonth() )->orderBy('created_at','desc')->with('student','studentGroup', 'transactionType')->get()->groupBy(function($item, $key){ return $item->created_at->format('d-m-Y');});
+        $stat['TPQA'] = $trans->whereClass_group_id(1)->sum('amount');
+        $stat['TPQD'] = $trans->whereClass_group_id(3)->sum('amount');
+        $stat['Non Santri'] = $trans->whereClass_group_id(5)->sum('amount'); 
                 
         //dd($transactions[0]->created_at->format('Y'));
 
@@ -28,9 +32,14 @@ class AlmarufTransactionController extends Controller
         
     	$t_types = TransactionType::orderBy('id','asc')->get();
     	$class_groups = ClassGroup::all();
-    	$students = Student::whereInstitution_id(9)->orderBy('fullname','asc')->pluck('fullname','id')->toArray();    	
+    	$students = Student::active()->whereInstitution_id(9)->orderBy('fullname','asc')->get();    	
+        foreach($students as $student){
+            $option_stu[$student->id] = str_limit($student->fullname,17,'~')."/".$student->nickname;
+        }
+
+       // dd($option_stu);
     	
-    	return view('admin.transaction.index',['transactions'=> $transactions, 't_types'=>$t_types, 'students'=>$students,'class_groups'=>$class_groups]);
+    	return view('admin.transaction.index',['stat'=>$stat, 'transactions'=> $transactions, 't_types'=>$t_types, 'students'=>$option_stu,'class_groups'=>$class_groups]);
     }
 
     public function ajaxCreate(Request $request){
@@ -95,11 +104,11 @@ class AlmarufTransactionController extends Controller
     }
 
 
-    public function indexData($arg = 'all' ){
+    public function indexData($arg){
         if ($arg == 'all'){
             $transaction = AlmarufTransaction::select('almaruf_transactions.*')->with(['student', 'transactionType', 'studentGroup']);
         } else {
-            $transaction = AlmarufTransaction::select('almaruf_transactions.*')->where('almaruf_transactions.created_at','=', $arg)->with(['student', 'transactionType', 'studentGroup']);
+            $transaction = AlmarufTransaction::select('almaruf_transactions.*')->whereBetween('almaruf_transactions.created_at', [$arg.' 00:00:00', $arg.' 23:59:59'])->with(['student', 'transactionType', 'studentGroup']);
         }
     
         //dd($transaction);
@@ -128,8 +137,9 @@ class AlmarufTransactionController extends Controller
 
             ->addColumn('fname', function($transaction){      
                 $name = $transaction->student->fullname;
+                $nname = $transaction->student->nickname;
                 $slug = $transaction->student->slug;
-                return "<a href='/admin/students/$slug'><b>$name</b></a>";
+                return "<a href='/admin/students/$slug'><b>".str_limit($name,15,'~')."</b></a>/$nname";
             })
 
             ->addColumn('famount', function($transaction){

@@ -18,10 +18,14 @@ class Student extends Model
 
     public function scopeFiltered($query){
         return $query->whereNotIn('id', [256] );
+    } 
+
+    public function scopeActive($query){
+        return $query->where('stop_date', '=', null );
     }
 
     public function lastAchievement(){
-        return $this->hasOne('App\Achievement')->latest();
+        return $this->hasOne('App\Achievement')->orderBy('stage_id', 'desc');
     }
 
     public function achievement(){

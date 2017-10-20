@@ -10,6 +10,7 @@ use Validator;
 use \Carbon\Carbon;
 
 use App\Student;
+use App\Stage;
 use App\Institution;
 use App\ClassGroup;
 use App\AlmarufTransaction;
@@ -21,6 +22,11 @@ use Auth;
 
 class StudentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function userInstitutions(){
         $ui = Auth::user()->institution->pluck('id')->toArray();
         return $ui;
@@ -68,8 +74,9 @@ class StudentController extends Controller
 
     public function show($slug)
     {
+        $stages = Stage::orderBy('id','asc')->get(); // For edit achievement
         $student = Student::with(['group', 'transaction'=>function($q){
-            $q->with('transactionType');
+            $q->orderBy('transaction_date','desc')->with('transactionType');
         }])->whereSlug($slug)->first();        
 
         $achievements = Achievement::with('stage')->whereStudent_id($student->id)->orderBy('stage_id','asc')->get();
@@ -89,7 +96,7 @@ class StudentController extends Controller
         }
         //dd($student);        
         
-        return view('admin.student.show',['student'=>$student, 'achievements' => $achievements ]);
+        return view('admin.student.show',['student'=>$student, 'achievements' => $achievements, 'stages'=>$stages ]);
     }
 
 

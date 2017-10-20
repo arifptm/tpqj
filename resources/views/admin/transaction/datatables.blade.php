@@ -1,5 +1,7 @@
 <script>
   $datatable = $('#transactions-data').DataTable({    
+    dom: 'Bfrtip',
+    buttons: ['pdf','excel'],  
     processing: true,
     serverSide: true,
     responsive: true,

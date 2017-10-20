@@ -13,6 +13,8 @@
       format: 'dd-mm-yyyy'
     });
 
+    $('#achievement-stat').load('/admin/data/block-achievement-statistic');
+
 
     /*
      *
@@ -20,7 +22,7 @@
      *
      */
     $('#btn-modal-create').click(function() {      
-      $('#datatitle').text('Tambah Prestasi');               
+      $('#datatitle').text('Tambah Kelulusan');               
 
       $('.shared-modal').attr('id','modal-create-achievement');
 
@@ -28,7 +30,7 @@
       $("#achievement_date").val(d+'-'+ m +'-'+y);      
             
       $('.modal-footer')
-        .html("<button id='submit-create' class='btn btn-primary pull-left btn-lg'>Simpan</button><button class='btn btn-default' data-dismiss='modal'>Batal</button>")
+        .html("<button id='submit-create' class='btn btn-primary pull-left btn-lg'>Simpan</button><button class='btn btn-lg pull-left bg-olive' data-dismiss='modal'>Batal</button>")
       $('#modal-create-achievement').modal('show');
     });
 
@@ -46,18 +48,19 @@
         processData: false,
 
         error: function(response){
-          var msg = response.responseJSON.errors;          
+          var msg = response.responseJSON.errors;
+          $('#modalmessage').html(msg.stage_id).parent().slideDown();
         },
 
         success: function(response){
 
-          // $('#students-data').DataTable().ajax.reload();
-          location.reload();
+          $('#achievements-data').DataTable().ajax.reload();
+          $('#achievement-stat').load('/admin/data/block-achievement-statistic');
+          //location.reload();
           // $('.fullname, .nickname, .institution_id, .gender, .group_id' ).hide().parent().removeClass('has-error');      
-          clearForm();
-          
+          clearForm();          
           $('#modal-create-achievement').modal('hide');
-          $('#ajaxmessage').html('Data prestasi <strong>' +response.fullname+ ' </strong> berhasil disimpan.').parent().slideDown();          
+          $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil disimpan.').parent().slideDown();          
         }
       });
     });
@@ -65,7 +68,7 @@
 
     /*
      *
-     * Edit Transaction
+     * Edit Achievement
      *
      */
     $(document).on('click', '#btn-modal-edit', function() {      
@@ -73,13 +76,15 @@
       $('#datatitle').text('Edit data prestasi')
 
       $('#id').val($(this).data('id'));      
+      
       $('#achievement_date').val($(this).data('achievement_date'));
+
       $('#student_id').val($(this).data('student_id')).trigger("change");
       var tr_value = $(this).data('stage_id')
       $('input[name="stage_id"][value='+tr_value+']').iCheck('check');
       
       $('.modal-footer')
-      .html("<button id='submit-update' class='btn btn-primary pull-left btn-lg'>Update</button><button class='btn btn-default' data-dismiss='modal'>Batal</button>")
+      .html("<button id='submit-update' class='btn btn-primary pull-left btn-lg'>Update</button><button class='btn btn-lg pull-left bg-olive' data-dismiss='modal'>Batal</button>")
       $('#modal-edit-achievement').modal('show');      
     });
 
@@ -100,18 +105,16 @@
         
         error: function(response){
           var msg = response.responseJSON.errors;
-          // msg.name ? $('.name').show().text(msg.name).parent().addClass('has-error') : $('.name').hide().parent().removeClass('has-error');
-          // msg.gender ? $('.gender').show().text(msg.gender).parent().addClass('has-error') : $('.gender').hide().parent().removeClass('has-error');
-          // msg.phone ? $('.phone').show().text(msg.phone).parent().addClass('has-error') : $('.phone').hide().parent().removeClass('has-error');       
+          $('#modalmessage').html(msg.stage_id).parent().slideDown();
         },
 
         success: function(response) {   
-          //$('#persons-data').DataTable().ajax.reload();
-          location.reload();
+          $('#achievements-data').DataTable().ajax.reload();
+          $('#achievement-stat').load('/admin/data/block-achievement-statistic');
           clearForm();
           
           $('#modal-edit-achievement').modal('hide');
-          $('#ajaxmessage').html('Data prestasi <strong>' +response.fullname+ ' </strong> berhasil diperbarui.').parent().slideDown();
+          $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil diperbarui.').parent().slideDown();  
         }
       });
     });
@@ -158,7 +161,8 @@
     function clearForm(){
       $('#myForm').find('input,select').not('[name=stage_id]').val('');
       $('#myForm .select2').val(null).trigger("change");
-      $('#myForm').find('[name=stage_id]').iCheck('uncheck')        
+      $('#myForm').find('[name=stage_id]').iCheck('uncheck')  
+      $('#modalmessage').parent().hide();      
     }
 
   </script>

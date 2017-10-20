@@ -1,6 +1,6 @@
 <div class="box-body">
 			<div class="form-group">
-				{!! Form::label('achievement_date', 'Tanggal:', ['class'=>'control-label']) !!}
+				{!! Form::label('achievement_date', 'Tanggal ujian:', ['class'=>'control-label']) !!}
 				<div class="input-group date">
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
@@ -11,7 +11,7 @@
 			</div>
 
 			<div class="form-group">
-				{!! Form::label('student_id', 'Nama:', ['class'=>'control-label']) !!}
+				{!! Form::label('student_id', 'Nama santri:', ['class'=>'control-label']) !!}
 				{!! Form::select('student_id', ['' => '-Silakan Pilih-'] + $students ,false, ['class' => 'form-control select2', 'id'=>'student_id','style'=>'width: 100%;']) !!}
 				<div class="help-block student_id" style="display:none"></div>
 			</div>

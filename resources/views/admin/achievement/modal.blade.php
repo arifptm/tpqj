@@ -1,24 +1,17 @@
    <div class="modal fade shared-modal" role="dialog">
       <div class="modal-dialog">
          <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-blue">
                <button type="button" class="close" data-dismiss="modal">&times;</button>
+               <h4 class="modal-title" id="datatitle"></h4>
             </div>   
                <div class="modal-body">
-               
-                  <section class="content-header">
-                     <h1 id="datatitle"></h1>
-                  </section>
-
-                  <div class="content">
-                     <div class="box box-primary">
-                        <form id='myForm' role='form' >         
-                           @include('admin.achievement.fields') 
-                        </form> 
-                     </div>
-                  </div>                 
+                  <div class="alert bg-green lead" style='display:none;'><i class="icon fa fa-check"></i> <span id="modalmessage"></span></div>
+                  <form id='myForm' role='form' >         
+                     @include('admin.achievement.fields') 
+                  </form> 
                </div>   
-               <div class="modal-footer">
+               <div class="modal-footer bg-blue">
                </div>            
          </div>
       </div>

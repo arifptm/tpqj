@@ -1,9 +1,37 @@
 @extends('template.layout')
 
 @section('header-scripts')
+  <link rel="stylesheet" href="/bower_components/AdminLTE/plugins/iCheck/flat/purple.css">
 @endsection
 
 @section('footer-scripts')
+  <script src="/bower_components/AdminLTE/plugins/iCheck/icheck.min.js"></script>
+
+  <script>
+    $('input[type="checkbox"], input[type="radio"]').iCheck({
+      checkboxClass: 'icheckbox_flat-purple',
+      radioClass   : 'iradio_flat-purple'
+    }); 
+  </script>
+
+  <script>
+    $(document).on('click', '.edit-achievement', function() {    
+      $("#achievement_date").val($(this).data('achievement_date'));
+      var student_stage_id = $(this).data('stage')      
+      $("input[name='stage_id'][value='"+student_stage_id+"']").iCheck('check');      
+      $("#notes").val($(this).data('notes'));      
+      $('#achievement-modal').modal('show');
+    });
+  </script>
+
+  <script>
+    $('#submit-edit-achievement').click(function(){
+      
+    });
+    
+  </script>
+
+
 @endsection 
 
 @section('content-top')
@@ -61,6 +89,7 @@
       <div class="box-body"> 
         <table class="table table-bordered table-condensed">
           <tr>
+            <th></th>
             <th>Tanggal</th>
             <th>Jilid</th>
             <th>Waktu</th>
@@ -68,10 +97,10 @@
           @if (count($achievements) > 0 )
             @foreach($achievements as $key=>$achievement)
               <tr>
+                <td><button class="btn btn-primary btn-xs edit-achievement" data-id="{{ $student->id }}" data-achievement_date="{{ $achievements[$key]->achievement_date->format('d-m-Y') }}" data-stage={{ $achievements[$key]->stage->id }}><i class="fa fa-edit"></i></button></td>
                 <td>{{ $achievements[$key]->achievement_date->format('d-M-y') }} </td>
                 <td>{{ $achievements[$key]->stage->name }} </td>
-                <td>{{ $achievements[$key]->duration }} </td>
-                
+                <td>{{ $achievements[$key]->duration }} </td>                
               </tr>
             @endforeach
           @endif
@@ -92,6 +121,7 @@
       <div class="box-body"> 
         <table class="table table-bordered table-condensed">
           <tr>
+            <th></th>
             <th>Tanggal</th>
             <th>Transaksi</th>
             <th>Jumlah</th>
@@ -110,8 +140,7 @@
       </div>
     </div>
   </div>
-
-
+  @include('/admin/student/modal-achievement')
 
 </div>
 @endsection	

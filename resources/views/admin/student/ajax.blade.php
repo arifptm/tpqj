@@ -134,7 +134,7 @@
 
     /*
      *
-     * Edit Person
+     * Edit Student
      *
      */
     $(document).on('click', '#btn-modal-edit', function() {
