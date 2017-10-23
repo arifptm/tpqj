@@ -21,7 +21,8 @@
       language: 'id',
       autoclose: true,
       todayHighlight:true,
-      format: 'dd-mm-yyyy'
+      format: 'dd-mm-yyyy',
+      endDate: '0d'
     });
 
     $('.monthpicker').datepicker({      
@@ -29,7 +30,13 @@
       autoclose: true,
       startView: 1,
       minViewMode: 1,
-      format: 'mm-yyyy'
+      format: 'mm-yyyy',
+      endDate: '+60d'
+    });
+
+    $('#tuition_month').change(function(){
+      $split = $(this).val().split('-');
+      $('#tuition_month_ymd').val($split[1]+'-'+$split[0]+'-01');
     });
 
     $('.shared-modal').on('hidden.bs.modal', function(){
@@ -44,6 +51,12 @@
       $('#myForm').find('[name=class_group_id], [name=transaction_type_id]').iCheck('uncheck')   
       $('.tuition_month_wrapper').hide();     
     }
+
+    $('#almaruftransaction-stat').load('/admin/data/block-almaruftransaction-statistic');
+
+    $('[name="transaction_type_id"], #student_id, #amount, #tuition_month').click(function() {
+      $('.err').html('').hide();
+    });
 
 
     /*
@@ -96,17 +109,21 @@
         processData: false,
 
         error: function(response){
-          var msg = response.responseJSON.errors;          
+          var msg = response.responseJSON.errors;   
+          $('.student_id').html(msg.student_id).slideDown();
+          $('.amount').html(msg.amount).slideDown();
+          $('.transaction_type_id').html(msg.transaction_type_id).slideDown();
+          $('.tuition_month').html(msg.tuition_month).slideDown();
+          $('.tuition_month_ymd').html(msg.tuition_month_ymd).slideDown();
         },
 
         success: function(response){
           clearForm(); 
           $('#modal-create-transaction').modal('hide');
-          
+          $('#almaruftransaction-stat').load('/admin/data/block-almaruftransaction-statistic');
 
-          $('#ajaxmessage').html('Transaksi <strong>'+ response.new.transaction_type.name+'</strong> '+response.new.student.fullname+ ' berhasil disimpan.').parent().show();    
-           //$('#transaction-data').DataTable().ajax.reload();  
-           $datatable.ajax.reload();    
+          $('#ajaxmessage').html('Transaksi <strong>'+ response.new.transaction_type.name+'</strong> '+response.new.student.nickname+ ' berhasil disimpan.').parent().slideDown();    
+          $datatable.ajax.reload();    
         }
       });
     });
@@ -188,17 +205,19 @@
         
         error: function(response){
           var msg = response.responseJSON.errors;
-
-          // msg.name ? $('.name').show().text(msg.name).parent().addClass('has-error') : $('.name').hide().parent().removeClass('has-error');
-          // msg.gender ? $('.gender').show().text(msg.gender).parent().addClass('has-error') : $('.gender').hide().parent().removeClass('has-error');
-          // msg.phone ? $('.phone').show().text(msg.phone).parent().addClass('has-error') : $('.phone').hide().parent().removeClass('has-error');       
+          $('.student_id').html(msg.student_id).slideDown();
+          $('.amount').html(msg.amount).slideDown();
+          $('.transaction_type_id').html(msg.transaction_type_id).slideDown();
+          $('.tuition_month').html(msg.tuition_month).slideDown();
+          $('.tuition_month_ymd').html(msg.tuition_month_ymd).slideDown();
         },
 
         success: function(response) {   
           $datatable.ajax.reload(); 
+          $('#almaruftransaction-stat').load('/admin/data/block-almaruftransaction-statistic');
           clearForm();                    
           $('#modal-edit-transaction').modal('hide');
-          $('#ajaxmessage').html('Data transaksi <strong>' +response.student.fullname+ ' </strong> berhasil diperbarui.').parent().slideDown();
+          $('#ajaxmessage').html('Transaksi <strong>'+ response.new.transaction_type.name+'</strong> '+response.new.student.nickname+ ' berhasil diperbarui.').parent().slideDown();  
         }
       });
     });

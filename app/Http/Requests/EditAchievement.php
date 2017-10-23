@@ -22,10 +22,10 @@ class EditAchievement extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request)
+    public function rules()
     {
         return [
-            'stage_id' => 'unique:achievements,stage_id,'.$request->id.',id,student_id,'.$request->student_id
+            'stage_id' => 'unique:achievements,stage_id,'.$this->id.',id,student_id,'.$this->student_id
             //'stage_id' => 'unique:achievements,stage_id,NULL,id,student_id,'.$request->student_id
         ];
     }

@@ -12,37 +12,57 @@ use App\TransactionType;
 use App\Student;
 use App\ClassGroup;
 
+use App\Http\Requests\CreateAlmarufTransaction;
+use App\Http\Requests\EditAlmarufTransaction;
+
 
 class AlmarufTransactionController extends Controller
 {
-    public function index(){
-    	$trans = new AlmarufTransaction; 
-        $transactions = $trans->where('created_at','>=', Carbon::now()->subMonth() )->orderBy('created_at','desc')->with('student','studentGroup', 'transactionType')->get()->groupBy(function($item, $key){ return $item->created_at->format('d-m-Y');});
-        $stat['TPQA'] = $trans->whereClass_group_id(1)->sum('amount');
-        $stat['TPQD'] = $trans->whereClass_group_id(3)->sum('amount');
-        $stat['Non Santri'] = $trans->whereClass_group_id(5)->sum('amount'); 
-                
-        //dd($transactions[0]->created_at->format('Y'));
-
-        // dd($transactions->groupBy(function($item, $key){
-        //     return $item->created_at->format('d-m-Y');
-        // }));
-
-        //dd($transactions);
-        
+    public function index(){        
     	$t_types = TransactionType::orderBy('id','asc')->get();
     	$class_groups = ClassGroup::all();
     	$students = Student::active()->whereInstitution_id(9)->orderBy('fullname','asc')->get();    	
         foreach($students as $student){
             $option_stu[$student->id] = str_limit($student->fullname,17,'~')."/".$student->nickname;
         }
-
-       // dd($option_stu);
-    	
-    	return view('admin.transaction.index',['stat'=>$stat, 'transactions'=> $transactions, 't_types'=>$t_types, 'students'=>$option_stu,'class_groups'=>$class_groups]);
+    	return view('admin.transaction.index',['t_types'=>$t_types, 'students'=>$option_stu,'class_groups'=>$class_groups]);
     }
 
-    public function ajaxCreate(Request $request){
+
+
+
+
+
+    public function AlmarufTransactionStatistic(){
+        $trans = new AlmarufTransaction; 
+        
+        $transactions = $trans->where('created_at','>=', Carbon::now()->subMonth() )->orderBy('created_at','desc')->with('student','studentGroup', 'transactionType')->get()->groupBy(function($item, $key){ return $item->created_at->format('d-m-Y');});
+
+        $stat['tpqa'] = $trans->whereClass_group_id(1)->sum('amount');
+        $stat['tpqd'] = $trans->whereClass_group_id(3)->sum('amount');
+        $stat['non-santri'] = $trans->whereClass_group_id(5)->sum('amount'); 
+
+        $tr_type = TransactionType::with('almarufTransaction')->get(['id','name']);       
+        
+        foreach($tr_type as $i){            
+            $d[$i->id]['id'] = $i['id'];
+            $d[$i->id]['name'] = $i['name'];
+            $d[$i->id]['debet_a'] = $i->almarufTransaction->where('amount', '>', 0)->where('class_group_id',1)->sum('amount');
+            $d[$i->id]['credit_a'] = $i->almarufTransaction->where('amount', '<', 0)->where('class_group_id',1)->sum('amount');
+            $d[$i->id]['debet_d'] = $i->almarufTransaction->where('amount', '>', 0)->where('class_group_id',3)->sum('amount');
+            $d[$i->id]['credit_d'] = $i->almarufTransaction->where('amount', '<', 0)->where('class_group_id',3)->sum('amount');    
+            $d[$i->id]['debet_ns'] = $i->almarufTransaction->where('amount', '>', 0)->where('class_group_id',5)->sum('amount');
+            $d[$i->id]['credit_ns'] = $i->almarufTransaction->where('amount', '<', 0)->where('class_group_id',5)->sum('amount');    
+        }
+        return view('admin.transaction.block-statistic',['transactions_statistic'=>$d, 'total_stat'=>$stat, 'transactions'=> $transactions] );        
+    }
+
+
+
+
+
+
+    public function ajaxCreate(CreateAlmarufTransaction $request){
         $input = $request->only(['amount','notes', 'transaction_type_id']);
 
         $transaction_date = explode('-', $request->transaction_date);        
@@ -56,8 +76,7 @@ class AlmarufTransactionController extends Controller
             $input['student_id'] = $request->student_id; 
             $input['class_group_id'] = Student::find($input['student_id'])->group->id;  
             if ($request->transaction_type_id == 4){
-                $tuition_month = explode('-', $request->tuition_month);
-                $input['tuition_month'] = $tuition_month[1].'-'.$tuition_month[0].'-01';
+                $input['tuition_month'] = $request->tuition_month_ymd;
             }
         }
 
@@ -66,7 +85,7 @@ class AlmarufTransactionController extends Controller
         return response()->json(['new' => $transaction->load('student', 'transactionType')]);        
     }
 
-    public function ajaxUpdate(Request $request){
+    public function ajaxUpdate(EditAlmarufTransaction $request){
         
         $input = $request->only(['amount','notes', 'transaction_type_id']);
 
@@ -81,8 +100,7 @@ class AlmarufTransactionController extends Controller
             $input['student_id'] = $request->student_id; 
             $input['class_group_id'] = Student::find($input['student_id'])->group->id;  
             if ($request->transaction_type_id == 4){
-                $tuition_month = explode('-', $request->tuition_month);
-                $input['tuition_month'] = $tuition_month[1].'-'.$tuition_month[0].'-01';
+                $input['tuition_month'] = $request->tuition_month_ymd;
             } else {
                 $input['tuition_month'] = null;
             }
@@ -91,7 +109,7 @@ class AlmarufTransactionController extends Controller
         $transaction = AlmarufTransaction::findOrFail($request->id);
         $transaction->update($input);                
 
-        return response()->json(['transaction' => $transaction->load('student')]);       
+        return response()->json(['new' => $transaction->load('student', 'transactionType')]);       
     }    
 
 
@@ -143,7 +161,7 @@ class AlmarufTransactionController extends Controller
             })
 
             ->addColumn('famount', function($transaction){
-                return "Rp. ".number_format($transaction->amount,0,',','.');
+                return "<div class='text-right'>Rp. ".number_format($transaction->amount,0,',','.')."</div>";
             })
 
             ->addColumn('actions', function($transaction){

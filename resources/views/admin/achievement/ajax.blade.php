@@ -13,6 +13,8 @@
       format: 'dd-mm-yyyy'
     });
 
+
+
     $('#achievement-stat').load('/admin/data/block-achievement-statistic');
 
 

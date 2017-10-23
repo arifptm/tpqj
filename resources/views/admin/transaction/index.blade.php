@@ -47,10 +47,10 @@
             <thead>
             <tr>              
               <th>ID</th>          
-              <th>Tanggal</th>          
+              <th>Tgl. Bayar</th>          
               <th>Transaksi</th>
               <th>Nama</th>
-              <th>Jumlah</th>              
+              <th class="text-right">Jumlah</th>              
               <th>Aksi</th>          
             </tr>
             </thead>
@@ -62,48 +62,8 @@
     </div>
 
     <div class="col-md-4">
-      <div class="row">
-
-        <div class="col-md-12">
-          <div class="box">    
-            <div class="box-body">
-              <table class="table-bordered table">
-                @foreach ($stat as $key=>$val)
-                  <tr>
-                    <th>Dana {{ $key }}</th>
-                    <td class="text-right">Rp. {{ number_format($val,0,',','.') }} </th>                  
-                  </tr>
-                @endforeach  
-                <tr class='bg-blue'>
-                    <th>Total Dana</th>
-                    <td class="text-right">Rp. {{ number_format(array_sum($stat),0,',','.') }} </th>                  
-                </tr>
-                
-              </table>            
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-12">
-          <div class="box">    
-            <div class="box-body">
-              <table class="table-bordered table">
-                <tr>
-                  <th>Tanggal</th>
-                  <th class="text-right">Jumlah Transaksi</th>
-                  <th>Detil</th>
-                </tr>
-                @foreach ($transactions as $k=>$transaction)
-                  <tr>
-                    <td>{{ $k }}</td>
-                    <td class="text-right">Rp. {{ number_format($transaction->sum('amount'),0,',','.') }}</td>
-                    <td><button class="btn btn-xs btn-primary" id="show-tr" data-tdate="{{ $k }}"><i class="fa fa-eye transaction-list" "></i></button></td>            
-                  </tr>
-                @endforeach
-              </table>            
-            </div>
-          </div>
-        </div>
+      <div class="row">        
+        <div id="almaruftransaction-stat"></div>        
       </div>
     </div>
   </div>

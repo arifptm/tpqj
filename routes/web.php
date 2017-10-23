@@ -68,6 +68,7 @@ Route::group(['prefix'=>'admin'], function() {
 	]);
 
 	Route::resource('almaruf_transactions', 'admin\AlmarufTransactionController');
+	Route::get('data/block-almaruftransaction-statistic', 'admin\AlmarufTransactionController@AlmarufTransactionStatistic');
 	Route::post('transactions/ajax/create','admin\AlmarufTransactionController@ajaxCreate');
 	Route::post('transactions/ajax/update','admin\AlmarufTransactionController@ajaxUpdate');
 	Route::post('transactions/ajax/delete','admin\AlmarufTransactionController@ajaxDelete');
