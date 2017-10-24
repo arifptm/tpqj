@@ -13,11 +13,21 @@ use App\Student;
 use App\ClassGroup;
 
 use App\Http\Requests\CreateAlmarufTransaction;
+use App\Http\Requests\AlmarufTransactionRequest;
 use App\Http\Requests\EditAlmarufTransaction;
 
 
 class AlmarufTransactionController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware('can:manage-almaruf_transactions', ['except' => []]);
+    }
+
+
+
+
+
     public function index(){        
     	$t_types = TransactionType::orderBy('id','asc')->get();
     	$class_groups = ClassGroup::all();
@@ -27,7 +37,6 @@ class AlmarufTransactionController extends Controller
         }
     	return view('admin.transaction.index',['t_types'=>$t_types, 'students'=>$option_stu,'class_groups'=>$class_groups]);
     }
-
 
 
 
@@ -61,8 +70,7 @@ class AlmarufTransactionController extends Controller
 
 
 
-
-    public function ajaxCreate(CreateAlmarufTransaction $request){
+    public function ajaxCreate(AlmarufTransactionRequest $request){
         $input = $request->only(['amount','notes', 'transaction_type_id']);
 
         $transaction_date = explode('-', $request->transaction_date);        
@@ -84,8 +92,12 @@ class AlmarufTransactionController extends Controller
         
         return response()->json(['new' => $transaction->load('student', 'transactionType')]);        
     }
+    
 
-    public function ajaxUpdate(EditAlmarufTransaction $request){
+
+
+
+    public function ajaxUpdate(AlmarufTransactionRequest $request){
         
         $input = $request->only(['amount','notes', 'transaction_type_id']);
 
@@ -114,12 +126,16 @@ class AlmarufTransactionController extends Controller
 
 
 
-    public function ajaxDelete(Request $request)
-    {
+
+
+    public function ajaxDelete(Request $request){
         $transaction = AlmarufTransaction::findOrFail($request->id);
         $transaction->delete();
         return response()->json(['transaction'=>$transaction]);
-    }
+    }    
+
+
+
 
 
     public function indexData($arg){

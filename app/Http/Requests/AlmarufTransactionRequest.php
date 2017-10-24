@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
-class CreateAlmarufTransaction extends FormRequest
+class AlmarufTransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,15 @@ class CreateAlmarufTransaction extends FormRequest
      */
     public function rules()
     {
+        $id = $this->id ?: NULL;
+
         if ($this->credit == 'no'){
             return [
                 'student_id' => 'required',
                 'amount' => 'numeric|required',
                 'transaction_type_id' =>'required',
-                'tuition_month' => 'required_if:transaction_type_id,4',
-                'tuition_month_ymd' => 'nullable|unique:almaruf_transactions,tuition_month,NULL,id,student_id,'.$this->student_id,
+                'tuition_month' => 'required_if:transaction_type_id,4',                
+                'tuition_month_ymd' => 'nullable|unique:almaruf_transactions,tuition_month,'.$id.',id,student_id,'.$this->student_id,
             ];
         } elseif ($this->credit == 'yes'){
             return [

@@ -14,7 +14,7 @@
 
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
-          @if (Auth::check())
+          @if (Auth::check() AND Auth::user()->verified == 1)
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <span class="hidden-xs">@auth {{ Auth::user()->name }} @endauth</span>

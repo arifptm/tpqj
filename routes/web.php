@@ -142,8 +142,8 @@ Route::get('/setroles', function(){
 	// 	'manage-achievements'
 	// ]);
 
-	 App\User::find(13)->disallow('manage-almaruf_transaction');
-	 App\User::find(13)->allow('manage-almaruf_transactions');
+	 App\User::find(13)->allow('view-almaruf_transaction_stat');
+	 //App\User::find(13)->allow('manage-almaruf_transactions');
 	// App\User::find(14)->assign('user');
 
 

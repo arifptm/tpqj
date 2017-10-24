@@ -54,9 +54,16 @@
 
     $('#almaruftransaction-stat').load('/admin/data/block-almaruftransaction-statistic');
 
+
     $('[name="transaction_type_id"], #student_id, #amount, #tuition_month').click(function() {
       $('.err').html('').hide();
     });
+
+  $("#amount").keyup(function(event){
+      if(event.keyCode == 13){
+          $('#submit-create').click();
+      }
+  });    
 
 
     /*
@@ -152,9 +159,10 @@
       }
       
       var tr_value = $(this).data('transaction_type_id')
+      var cr = $(this).data('amount')
       $('input[name="transaction_type_id"][value='+tr_value+']').iCheck('check');
 
-      if(tr_value == 4 ){
+      if(tr_value == 4 && cr > 0 ){
         $('.tuition_month_wrapper').slideDown();
       }
 

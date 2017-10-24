@@ -6,7 +6,7 @@
 	"infoPostFix":    "",
 	"thousands":      ".",
 	"loadingRecords": "Loading...",
-	"processing":     "Sedang mencari...",
+	"processing":     "<img src='/assets/ajax_loader.svg'>",
 	"search":         "Cari:",
 	"zeroRecords":    "Tidak ditemukan",
 	"paginate": {

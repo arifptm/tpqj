@@ -40,10 +40,15 @@
 
 @section('content-main')
   <div class="row">
-    <div class="col-md-8">
+    @can('view-almaruf_transaction_stat')
+      <div class="col-md-8">
+    @endcan
+    @cannot('view-almaruf_transaction_stat')
+      <div class="col-md-12">
+    @endcan
       <div class="box">    
-        <div class="box-body">
-          <table class="table table-bordered" id="transactions-data">
+        <div class="box-body" style="min-height:200px;">
+          <table class="table table-bordered" id="transactions-data" >
             <thead>
             <tr>              
               <th>ID</th>          
@@ -60,12 +65,15 @@
         </div>
       </div>
     </div>
-
+    @can('view-almaruf_transaction_stat')
     <div class="col-md-4">
       <div class="row">        
-        <div id="almaruftransaction-stat"></div>        
+        <div id="almaruftransaction-stat">
+          <div class="loader" style="min-height: 200px;"></div>          
+        </div>        
       </div>
     </div>
+    @endcan
   </div>
   @include('/admin/transaction/modal')
 
