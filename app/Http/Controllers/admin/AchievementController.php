@@ -8,6 +8,7 @@ use Yajra\DataTables\Facades\DataTables;
 //use \Carbon\Carbon;
 
 use App\Achievement;
+use App\Institution;
 use App\Stage;
 use App\Student;
 use App\Http\Requests\CreateAchievement;
@@ -28,10 +29,14 @@ class AchievementController extends Controller
         $ui = Auth::user()->institution->pluck('id')->toArray();
         return $ui;
     }
-    
+
     public function index(){
     	$stages = Stage::orderBy('id','asc')->get();
     	$students = Student::active()->whereIn('institution_id', $this->userInstitutions());
+
+        $md_ins = new Institution;
+        $institutions = $md_ins->filtered()->whereHas('student', function($q){$q->whereHas('achievement');})->get();
+        $userInstitutions = Institution::whereIn('id',$this->userInstitutions())->get();
 
         $sts =[];
         if($students->count() > 0){
@@ -40,30 +45,51 @@ class AchievementController extends Controller
     	   }    
     	}    
 
-         //    $ss = Achievement::where('student_id',254)->orderBy('stage_id','desc')->get();
-         //    $l = $ss->first()->stage_id;
-         //    $ss->shift();
-
-
-         // dd($ss);
-
-    	return view('admin.achievement.index',['stages'=>$stages, 'students'=>$sts]);
+    	return view('admin.achievement.index',['stages'=>$stages, 'students'=>$sts, 'institutions'=> $institutions]);
     }
 
-    public function achievementStatistic(){
-        $achievements = Achievement::activeStudent()->where('is_latest','=', 1)->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
+    
 
+
+
+    public function achievementStatistic($ins){
+        if ($ins == 'all'){
+            $ins = Institution::pluck('id')->toArray();
+            $ins = implode('_', $ins);
+        }
+
+        $ins = explode('_', $ins);
+
+        $achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) use ($ins) {$q->whereIn('institution_id',$ins); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
         
         return view('admin.achievement.block-statistic', ['achievements'=>$achievements]);
     }
 
 
-    public function indexData($arg){
-        if ($arg == 'all'){
-            $achievement = Achievement::select('achievements.*')->with('stage', 'student')->whereIs_latest('1')->activeStudent();
-        } else {
-            $achievement = Achievement::select('achievements.*')->where('achievements.stage_id','=', $arg)->with(['student', 'stage'])->whereIs_latest('1')->activeStudent();
+
+    public function indexData($ins=null, $stg=null){
+        if ($ins == 'all'){
+            $ins = Institution::pluck('id')->toArray();
+            $ins = implode('_', $ins);
         }
+        if ($stg == 'all'){
+            $stg = Stage::pluck('id')->toArray();
+            $stg = implode('_', $stg);
+        }
+
+        $ins=explode('_', $ins);
+        $stg=explode('_', $stg);
+
+        //dd($ins);
+        // if ($param1 == 'all'){
+        //     $achievement = Achievement::select('achievements.*')->with('stage', 'student')->whereIs_latest('1')->activeStudent();
+        // } else {
+            $achievement = Achievement::select('achievements.*')
+            ->whereHas('student', function($q) use($ins){ $q->whereIn('institution_id', $ins); })
+            ->whereIn('achievements.stage_id', $stg)
+            ->with(['student', 'stage'])->whereIs_latest('1')->activeStudent();
+            
+        // }
 
         $datatable = Datatables::of($achievement)
             ->addColumn('fname', function($achievement){      
@@ -111,10 +137,11 @@ class AchievementController extends Controller
 
 
     public function ajaxCreate(CreateAchievement $request){    
-        $input = $request->all();        
-        $achievement_date = explode('-', $request->achievement_date);        
-        $input['achievement_date'] = $achievement_date[2].'-'.$achievement_date[1].'-'.$achievement_date[0];
-        
+        $input = $request->only(['student_id','stage_id','notes']);      
+        //$achievement_date = explode('-', $request->achievement_date);        
+        // $input['achievement_date'] = $achievement_date[2].'-'.$achievement_date[1].'-'.$achievement_date[0];
+        $input['achievement_date'] = $request->acda_alt;
+
         //$processed_student = Achievement::where('student_id', '=', $request->student_id);
         $latest_stage = Achievement::where('student_id', '=', $request->student_id)->orderBy('stage_id','desc')->first();
         if ($latest_stage == null){            
@@ -139,7 +166,7 @@ class AchievementController extends Controller
     public function ajaxUpdate(EditAchievement $request){    
         $achievement = Achievement::findOrFail($request->id);    
             
-        $input = $request->all();      
+        $input = $request->only(['student_id','stage_id','notes']);   
         $achievement_date = explode('-', $request->achievement_date);        
         $input['achievement_date'] = $achievement_date[2].'-'.$achievement_date[1].'-'.$achievement_date[0];
         $input['is_latest'] = 0;        

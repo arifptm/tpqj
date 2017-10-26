@@ -55,7 +55,7 @@ Route::get('achievements/{slug}', 'pub\AchievementController@show');
 Route::group(['prefix'=>'admin'], function() {	
 	
 	Route::get('achievements', 'admin\AchievementController@index');
-	Route::get('data/block-achievement-statistic', 'admin\AchievementController@achievementStatistic');
+	Route::get('data/block-achievement-statistic/{ins}', 'admin\AchievementController@achievementStatistic');
 	Route::post('achievements/ajax/create','admin\AchievementController@ajaxCreate');
 	Route::post('achievements/ajax/update','admin\AchievementController@ajaxUpdate');
 	Route::post('achievements/ajax/delete','admin\AchievementController@ajaxDelete');
@@ -108,7 +108,8 @@ Route::get('data/i-students','DashboardController@institutionStudent');
 Route::get('data/i-achievements','DashboardController@institutionAchievement');
 
 Route::get('data/almaruf-transactions/{arg}','admin\AlmarufTransactionController@indexData');
-Route::get('data/achievements/{arg}','admin\AchievementController@indexData');
+
+Route::get('data/achievements/{ins}/{stg}', [ 'uses'=>'admin\AchievementController@indexData' ]);
 
 Route::get('pub/data/persons','pub\PersonController@dataIndex');	
 Route::get('pub/data/students','pub\StudentController@dataIndex');	
@@ -118,6 +119,10 @@ Route::get('coba', function(){
 	return View::make('public.include.last_achievement');
 });
 Route::post('upload','TesController@upload');
+
+Route::get('/convert/togregorian/{hijri}','HijriController@toGregorian');
+
+
 
 //Route::get('tes','InstitutionController@tes');
 Route::get('tes','TesController@tes');

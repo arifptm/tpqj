@@ -15,7 +15,7 @@
 		<div class="box-header with-border">
 			<h3 class="box-title">Dana TPQA = <span class="text-lime"><b>{{ number_format($total_stat['tpqa'],0,',','.') }}</b></span></h3>
 			<div class="box-tools pull-right">
-				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
 				</button>
 			</div>
 		</div>
@@ -53,7 +53,7 @@
 		<div class="box-header with-border">
 			<h3 class="box-title">Dana TPQD = <span class="text-lime"><b>{{ number_format($total_stat['tpqd'],0,',','.') }}</b></span></h3>
 				<div class="box-tools pull-right">
-					<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+					<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
 					</button>
 				</div>
 			</div>
@@ -91,7 +91,7 @@
 		<div class="box-header with-border">
 			<h3 class="box-title">Dana Non Santri = <span class="text-lime"><b>{{ number_format($total_stat['non-santri'],0,',','.') }}</b></span></h3>
 				<div class="box-tools pull-right">
-					<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+					<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
 					</button>
 				</div>
 			</div>

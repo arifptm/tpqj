@@ -16,12 +16,10 @@ class TesController extends Controller
 {
     
   public function tes(){
-    
-
-    $institution = Institution::find(26);
-    //dd($institution);
-    return response()->json(['institution' => $institution->with(['region','region.regionGroup','theheadmaster'])->first()]);
-    }
   
+  public function toGregorian($hijri){
+  	$d =explode('_', $hijri);  	
+  	return $date = \GeniusTS\HijriDate\Hijri::convertToGregorian($d[0], $d[1], $d[2])->format('d-m-Y');
+  }
 
 }

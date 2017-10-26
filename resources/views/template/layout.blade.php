@@ -52,6 +52,7 @@
 </div>
 
 <script src="/bower_components/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script> -->
 <script src="/bower_components/AdminLTE/bootstrap/js/bootstrap.min.js"></script>
 <script src="/bower_components/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <script src="/bower_components/AdminLTE/plugins/fastclick/fastclick.js"></script>

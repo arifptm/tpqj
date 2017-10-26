@@ -8,6 +8,7 @@
         "php": ">=7.0.0",
         "cviebrock/eloquent-sluggable": "^4.3",
         "fideloper/proxy": "^3.3",
+        "geniusts/laravel-hijri-dates": "^1.0",
         "intervention/image": "^2.4",
         "intervention/imagecache": "^2.3",
         "laracasts/flash": "^3.0",

@@ -48,13 +48,6 @@
       };   
 
       var ctx = $("#teacherChart");
-      
-      function show() {
-
-        $('#teacherChart').delay(500).fadeIn(function() {
-        
-
-
       var barGraph = new Chart(ctx, {
         type: 'horizontalBar',
         data: chartdata1,
@@ -73,7 +66,6 @@
           },
         }
       });
-});
     }                       
   })
 </script>
@@ -249,7 +241,7 @@
         <div class="box-body">
           <div class="chart">
             <canvas id="teacherChart" style="height:320px"></canvas>
-            <div class="loader" style="min-height: 200px;"></div>  
+
           </div>
         </div>
       </div>

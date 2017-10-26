@@ -8,3 +8,13 @@
    height: 100%;
    width: 100%;	
 }
+
+.calendars-popup {
+	z-index: 1100;
+}
+
+.calendars-ctrl{
+	display:none;
+}
+
+

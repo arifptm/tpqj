@@ -5,17 +5,81 @@
     });
 
     $('.select2').select2();
-    
-    $('.datepicker').datepicker({      
-      language: 'id',
-      autoclose: true,
-      todayHighlight:true,
-      format: 'dd-mm-yyyy'
+
+
+
+    $('#achievement_date').calendarsPicker({
+      showTrigger: '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>',
+      calendar: $.calendars.instance('gregorian','id'),
+      prevText: 'M', commandsAsDateFormat: true,
+      nextText: 'M', commandsAsDateFormat: true,
+      dateFormat: 'dd-mm-yyyy',
+      altField: '#acda_alt',
+      altFormat: 'yyyy-mm-dd',
+      autoSize: true,
+      maxDate: 0
+    });
+
+    $('#achievement_hijri_date').calendarsPicker({
+      showTrigger: '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>',
+      calendar: $.calendars.instance('islamic','id'),
+      prevText: 'M', commandsAsDateFormat: true,
+      nextText: 'M', commandsAsDateFormat: true,
+      dateFormat: 'dd-mm-yyyy',
+      altField: '#achida_alt',
+      altFormat: 'yyyy-mm-dd',
+      autoSize: true,
+      maxDate: 0
+    });
+
+    $('#achievement_date').change(function(){
+      dt = ($(this).val()).split('-');
+
+      var gc = $.calendars.instance('gregorian');
+      var d = gc.newDate(
+        parseInt(dt[2], 10),
+        parseInt(dt[1], 10),
+        parseInt(dt[0], 10)).toJD();
+
+      var gcn = $.calendars.instance('islamic').fromJD(d);
+       $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
+    });
+
+    $('#achievement_hijri_date').change(function(){
+      dt = ($(this).val()).split('-');
+
+      var gc = $.calendars.instance('islamic');
+      var d = gc.newDate(
+        parseInt(dt[2], 10),
+        parseInt(dt[1], 10),
+        parseInt(dt[0], 10)).toJD();
+
+      var gcn = $.calendars.instance('gregorian').fromJD(d);
+       $('#achievement_date').val(gcn.formatDate('dd-mm-yyyy'))
     });
 
 
+    $('[name="chosen_institution[]"]').iCheck('check');
 
-    $('#achievement-stat').load('/admin/data/block-achievement-statistic');
+    $(document).on('ifChecked ifUnchecked', '[name="chosen_institution[]"]', function() {         
+      var vins = institutionFilter()
+      $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
+      $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+      $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
+    });
+
+
+    $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
+
+    
+    function institutionFilter(){
+      var ins = new Array;
+      $('[name="chosen_institution[]"]:checked').each ( function() {
+        ins.push ( $(this).val() );
+      });
+      if ( ins.length == 0 ){ vins = '0' } else { vins = ins.join('_')}
+      return vins;
+    };
 
 
     /*
@@ -25,11 +89,19 @@
      */
     $('#btn-modal-create').click(function() {      
       $('#datatitle').text('Tambah Kelulusan');               
-
+    
       $('.shared-modal').attr('id','modal-create-achievement');
+  
+      gcm = $.calendars.instance('gregorian','id').today();
+      $('#achievement_date').val(gcm.formatDate('dd-mm-yyyy'))
+      $('#acda_alt').val(gcm.formatDate('yyyy-mm-dd'))
 
-      var dt = new Date(); d = ('0'+(dt.getDate())).slice(-2); m = ('0'+(dt.getMonth()+1)).slice(-2); y = dt.getFullYear();        
-      $("#achievement_date").val(d+'-'+ m +'-'+y);      
+      gch = $.calendars.instance('islamic','id').today();
+      $('#achievement_hijri_date').val(gch.formatDate('dd-mm-yyyy'))      
+      $('#achida_alt').val(gch.formatDate('yyyy-mm-dd'))
+
+      // var dt = new Date(); d = ('0'+(dt.getDate())).slice(-2); m = ('0'+(dt.getMonth()+1)).slice(-2); y = dt.getFullYear();        
+      // $("#achievement_date").val(d+'-'+ m +'-'+y);      
             
       $('.modal-footer')
         .html("<button id='submit-create' class='btn btn-primary pull-left btn-lg'>Simpan</button><button class='btn btn-lg pull-left bg-olive' data-dismiss='modal'>Batal</button>")
@@ -56,8 +128,13 @@
 
         success: function(response){
 
-          $('#achievements-data').DataTable().ajax.reload();
-          $('#achievement-stat').load('/admin/data/block-achievement-statistic');
+              var vins = institutionFilter()
+            $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
+            $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+            $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
+
+          // $('#achievements-data').DataTable().ajax.reload();
+          // $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
           //location.reload();
           // $('.fullname, .nickname, .institution_id, .gender, .group_id' ).hide().parent().removeClass('has-error');      
           clearForm();          
@@ -80,6 +157,12 @@
       $('#id').val($(this).data('id'));      
       
       $('#achievement_date').val($(this).data('achievement_date'));
+
+      cl = $('#achievement_date').val().split('-');
+      gch = $.calendars.instance('islamic','id').newDate(cl[2],cl[1],cl[0]);
+      $('#achievement_hijri_date').val(gch.formatDate('dd-mm-yyyy'))
+
+
 
       $('#student_id').val($(this).data('student_id')).trigger("change");
       var tr_value = $(this).data('stage_id')
@@ -111,8 +194,12 @@
         },
 
         success: function(response) {   
-          $('#achievements-data').DataTable().ajax.reload();
-          $('#achievement-stat').load('/admin/data/block-achievement-statistic');
+          var vins = institutionFilter()
+          $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
+          $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+          $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
+          // $('#achievements-data').DataTable().ajax.reload();
+          // $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
           clearForm();
           
           $('#modal-edit-achievement').modal('hide');
@@ -148,7 +235,11 @@
           success: function(data) {              
             $('#ajaxmessage').html(data.message).parent().slideDown();
             //$('#students-data').DataTable().ajax.reload();
-            location.reload();
+            //location.reload();
+            var vins = institutionFilter()
+            $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
+            $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+            $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);            
           }
         });
       }

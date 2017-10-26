@@ -8,7 +8,7 @@
     autoWidth   : false,
     pageLength: 20,
     order: [ 0, "desc" ],
-    ajax: '/data/achievements/all',  
+    ajax: '/data/achievements/all/all',  
     columns: [
       { data: 'id', name: 'id', searchable: false, "visible": false },
       
@@ -32,7 +32,8 @@
 
     $(document).on('click', '#show-arc', function() {        
       stage_id = $(this).data('stage_id')
-      $datatable.ajax.url( '/data/achievements/' + stage_id ).load();
+      institution_id = $(this).data('institution_id')
+      $datatable.ajax.url( '/data/achievements/' + institution_id+'/'+stage_id ).load();
     });
 
 </script>
