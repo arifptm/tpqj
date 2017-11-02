@@ -43,6 +43,7 @@
 
       var gcn = $.calendars.instance('islamic').fromJD(d);
        $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
+       $('#achida_alt').val(gcn.formatDate('yyyy-mm-dd'))
     });
 
     $('#achievement_hijri_date').change(function(){
@@ -56,6 +57,7 @@
 
       var gcn = $.calendars.instance('gregorian').fromJD(d);
        $('#achievement_date').val(gcn.formatDate('dd-mm-yyyy'))
+       $('#acda_alt').val(gcn.formatDate('yyyy-mm-dd'))
     });
 
 
@@ -137,6 +139,7 @@
           // $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
           //location.reload();
           // $('.fullname, .nickname, .institution_id, .gender, .group_id' ).hide().parent().removeClass('has-error');      
+          
           clearForm();          
           $('#modal-create-achievement').modal('hide');
           $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil disimpan.').parent().slideDown();          

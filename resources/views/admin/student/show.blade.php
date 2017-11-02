@@ -1,11 +1,25 @@
 @extends('template.layout')
 
 @section('header-scripts')
+
+  <link rel="stylesheet" href="/bower_components/jquery.calendars-2.1.0/css/ui.calendars.picker.css">
+  <link rel="stylesheet" href="/bower_components/jquery.calendars-2.1.0/css/jquery.calendars.picker.css">
   <link rel="stylesheet" href="/bower_components/AdminLTE/plugins/iCheck/flat/purple.css">
+  <link rel="stylesheet" href="/bower_components/AdminLTE/plugins/select2/select2.css">
+
+
 @endsection
 
 @section('footer-scripts')
   <script src="/bower_components/AdminLTE/plugins/iCheck/icheck.min.js"></script>
+
+  <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.plugin.js"></script>
+  <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.min.js"></script>
+  <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.plus.min.js"></script>
+  <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.picker.js"></script>
+  <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.islamic.js"></script>
+  <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.picker-id.js"></script>    
+  <script src="/bower_components/AdminLTE/plugins/select2/select2.min.js"></script>
 
   <script>
     $('input[type="checkbox"], input[type="radio"]').iCheck({
@@ -15,132 +29,245 @@
   </script>
 
   <script>
-    $(document).on('click', '.edit-achievement', function() {    
-      $("#achievement_date").val($(this).data('achievement_date'));
-      var student_stage_id = $(this).data('stage')      
-      $("input[name='stage_id'][value='"+student_stage_id+"']").iCheck('check');      
-      $("#notes").val($(this).data('notes'));      
-      $('#achievement-modal').modal('show');
-    });
+    $('.select2').select2();
   </script>
 
   <script>
-    $('#submit-edit-achievement').click(function(){
+    sid = $('#student_id').text()
+    $('#student_achievements').load('/data/student-achievements/'+sid);    
+    $('#student_transactions').load('/data/student-transactions/'+sid);    
+    $('#student').load('/data/student/'+sid);    
+  </script>
+
+
+  <script>
+    $(document).on('click', '.edit-achievement', function() {
+      $('#id').val($(this).data('id'));
+      $('#student_id').val($('#student_id').text());
+      $('#achievement_date').val($(this).data('achievement_date'));
+      $('#notes').val($(this).data('notes')); 
+      $('#achievement-modal').modal('show');
+
+      var student_stage_id = $(this).data('stage_id')
+      $("input[name='stage_id'][value='"+student_stage_id+"']").iCheck('check');                                 
+
+      dt = ($(this).data('achievement_date')).split('-')      
+      $('#acda_alt').val(dt[2]+'-'+dt[1]+'-'+dt[0]);
+      var gc = $.calendars.instance('gregorian');
+      var d = gc.newDate(
+          parseInt(dt[2], 10),
+          parseInt(dt[1], 10),
+          parseInt(dt[0], 10)
+        ).toJD();
+
+      var gcn = $.calendars.instance('islamic').fromJD(d);
+        $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
+        $('#achida_alt').val(gcn.formatDate('yyyy-mm-dd'))
+        
+    });
+  </script>
+
+
+  <script>
+    $('#achievement_date').calendarsPicker({
+      showTrigger: '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>',
+      calendar: $.calendars.instance('gregorian','id'),
+      prevText: 'M', commandsAsDateFormat: true,
+      nextText: 'M', commandsAsDateFormat: true,
+      dateFormat: 'dd-mm-yyyy',
+      altField: '#acda_alt',
+      altFormat: 'yyyy-mm-dd',
+      autoSize: true,
+      maxDate: 0
+    });
+
+    $('#achievement_hijri_date').calendarsPicker({
+      showTrigger: '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>',
+      calendar: $.calendars.instance('islamic','id'),
+      prevText: 'M', commandsAsDateFormat: true,
+      nextText: 'M', commandsAsDateFormat: true,
+      dateFormat: 'dd-mm-yyyy',
+      altField: '#achida_alt',
+      altFormat: 'yyyy-mm-dd',
+      autoSize: true,
+      maxDate: 0
+    });
+
+    $('#achievement_date').change(function(){
+      dt = ($(this).val()).split('-');
+
+      var gc = $.calendars.instance('gregorian');
+      var d = gc.newDate(
+        parseInt(dt[2], 10),
+        parseInt(dt[1], 10),
+        parseInt(dt[0], 10)).toJD();
+
+      var gcn = $.calendars.instance('islamic').fromJD(d);
+       $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
+       $('#achida_alt').val(gcn.formatDate('yyyy-mm-dd'))
+    });
+
+    $('#achievement_hijri_date').change(function(){
+      dt = ($(this).val()).split('-');
+
+      var gc = $.calendars.instance('islamic');
+      var d = gc.newDate(
+        parseInt(dt[2], 10),
+        parseInt(dt[1], 10),
+        parseInt(dt[0], 10)).toJD();
+
+      var gcn = $.calendars.instance('gregorian').fromJD(d);
+       $('#achievement_date').val(gcn.formatDate('dd-mm-yyyy'))
+       $('#acda_alt').val(gcn.formatDate('yyyy-mm-dd'))
+    });
+  </script>
+
+<script>
+    $(document).on('click', '#btn-modal-edit', function() {
+      $("#status").removeAttr('name');
+      $('.shared-modal').attr('id','modal-edit-transaction')
+      $('#datatitle').text('Edit data transaksi')
+
+      $('#id').val($(this).data('id'));
+      $tr_date = $(this).data('transaction_date').split('-');
+      $('#transaction_date').val($tr_date[2]+'-'+$tr_date[1]+'-'+$tr_date[0]);
       
+      $tuit_dt = $(this).data('tuition_month');
+      if ($tuit_dt == '0' ){
+        $('#tuition_month').val('');        
+      } else {
+        $tuit_dt = $tuit_dt.split('-');
+        $('#tuition_month').val($tuit_dt[1]+'-'+$tuit_dt[0]);
+      }
+      
+      var tr_value = $(this).data('transaction_type_id')
+      var cr = $(this).data('amount')
+      $('input[name="transaction_type_id"][value='+tr_value+']').iCheck('check');
+
+      if(tr_value == 4 && cr > 0 ){
+        $('.tuition_month_wrapper').slideDown();
+      }
+
+
+      $('#student_id').val($(this).data('student_id')).select2();
+      var t_amount = $(this).data('amount')
+      $('#amount').val(Math.abs(t_amount));
+      $('#notes').val($(this).data('notes'));
+
+      if (t_amount < 0 ){
+        $('.class_group_id_wrapper').show();
+        $('.student_id_wrapper').hide();
+        $('#credit').val('yes');  
+      } else {
+        $('.class_group_id_wrapper').hide();
+        $('.student_id_wrapper').show();
+        $('#credit').val('no');  
+      }
+
+      if ($(this).data('class_group_id') == 1){
+        $("#tpqa").iCheck('check');
+      } else if ($(this).data('class_group_id') == 3){
+        $("#tpqd").iCheck('check');
+      } else if ($(this).data('class_group_id') == 5){
+        $("#non-santri").iCheck('check');
+      }
+
+      
+      $('.modal-footer')
+      .html("<button id='submit-update' class='btn btn-primary pull-left btn-lg'>Update</button><button class='btn btn-lg pull-left bg-olive' data-dismiss='modal'>Batal</button>")
+      $('#modal-edit-transaction').modal('show');      
+    });
+</script>
+
+  <script>
+    $('#submit-edit-achievement').click(function(){
+      var form = $('#myForm')[0];
+      var formData = new FormData(form);      
+      $.ajax({
+        type: 'post',
+        url: '/admin/achievements/ajax/update',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: formData,
+        type:"POST",
+        contentType: false,
+        processData: false,
+        
+        error: function(response){
+          var msg = response.responseJSON.errors;
+          $('#modalmessage').html(msg.stage_id).parent().slideDown();
+        },
+
+        success: function(response) {   
+          //var vins = institutionFilter()
+          //$datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
+          //$('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+          //$('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
+          
+          //clearForm();
+          
+          $('#achievement-modal').modal('hide');
+          $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil diperbarui.').parent().slideDown();  
+        }
+      });
     });
     
   </script>
 
 
+
+<script>
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $('#'+$(this).closest('section').attr('id')).load(url)
+    });
+</script>
+
 @endsection 
 
 @section('content-top')
-  <h1>Data Santri</h1>
+  <div class="alert bg-green lead" style='display:none;'><i class="icon fa fa-check"></i> <span id="ajaxmessage"></span></div>
+  <h1>Data Santri</h1><div id="student_id" class="hidden">{{ $student->id }}</div>
 @endsection
 
 @section('content-main')
+
 <div class="row">
   <div class="col-md-3">
-    <div class="box box-primary">
-      <div class="box-body">          
-        @if ($student->image)
-          <img class="img-circle img-responsive profile-user-img" src="/imagecache/medium_sq/{{ $student->image }}" alt="">
-        @else 
-          <img class="img-circle img-responsive profile-user-img" src="/imagecache/medium_sq/default.jpg" alt="">
-        @endif
-        <h3 class="profile-username text-center">{{$student->fullname}}</h3>
-        <h5 class="text-center">{{ $student->address }}</h5>
-        <ul class="list-group list-group-unbordered">
-          <li class="list-group-item">
-            <b>Nama panggilan</b> <span class="pull-right">{{ $student->nickname or '...' }}</span>
-          </li>
-          <li class="list-group-item">
-            <b>Tempat lahir</b> <span class="pull-right">{{ $student->birth_place or '...' }}</span>
-          </li>
-          <li class="list-group-item">
-            <b>Tanggal lahir</b> <span class="pull-right">@if($student->birth_date != null){{ $student->birth_date->format('d-m-Y') }} 
-              / {{ $student->birth_date->diffInYears() }} tahun @else ... @endif</span>
-          </li>
-          <li class="list-group-item">
-            <b>Pendaftaran</b> <span class="pull-right">{{ \Carbon\Carbon::parse($student->registered_date)->format('d-m-Y') }}</span>
-          </li>
-          <li class="list-group-item">
-            <b>Status</b> <a class="pull-right">
-                @if ($student->stop_date)
-                  <span class="badge bg-orange">Non Aktif</span>
-                @else
-                  <span class="badge bg-blue">Aktif</span>
-                @endif</a>
-          </li>
-          <li class="list-group-item">
-            <b>Kelompok</b> <span class="pull-right">{{ $student->group->description }}</span>
-          </li>
-        </ul>
-        <a href="/admin/students/{{$student->id}}/edit" class="btn btn-block btn-primary">Edit User</a>
-      </div>
+    <div class="box box-primary" style="min-height: 100px;">
+      <div id="student">     
+        <div class="overlay">
+          <i class="fa fa-refresh fa-spin"></i>
+        </div>
+      </div>  
     </div>
   </div>
 
-   <div class="col-md-4">
-    <div class="box box-primary">
-      <div class="box-header with-border"> 
-        <h3 class="box-title">Riwayat Belajar</h3>
-      </div>
-      <div class="box-body"> 
-        <table class="table table-bordered table-condensed">
-          <tr>
-            <th></th>
-            <th>Tanggal</th>
-            <th>Jilid</th>
-            <th>Waktu</th>
-          </tr>
-          @if (count($achievements) > 0 )
-            @foreach($achievements as $key=>$achievement)
-              <tr>
-                <td><button class="btn btn-primary btn-xs edit-achievement" data-id="{{ $student->id }}" data-achievement_date="{{ $achievements[$key]->achievement_date->format('d-m-Y') }}" data-stage={{ $achievements[$key]->stage->id }}><i class="fa fa-edit"></i></button></td>
-                <td>{{ $achievements[$key]->achievement_date->format('d-M-y') }} </td>
-                <td>{{ $achievements[$key]->stage->name }} </td>
-                <td>{{ $achievements[$key]->duration }} </td>                
-              </tr>
-            @endforeach
-          @endif
-        </table>
-        
-      </div>
+  <div class="col-md-4">
+    <div class="box box-primary" style="min-height: 100px;">
+      <section id="student_achievements">     
+        <div class="overlay">
+          <i class="fa fa-refresh fa-spin"></i>
+        </div>
+      </section>  
     </div>
   </div>
-
 
   <div class="col-md-5">
-    <div class="box box-primary">
-      <div class="box-header with-border"> 
-        <h3 class="box-title">Riwayat Transaksi</h3>
-        <span class="h3"><span class="label bg-black label-lg pull-right"><small>Total:</small> {{ number_format($student->transaction()->sum('amount'),0,',','.') }}</span></span>
-
-      </div>
-      <div class="box-body"> 
-        <table class="table table-bordered table-condensed">
-          <tr>
-            <th></th>
-            <th>Tanggal</th>
-            <th>Transaksi</th>
-            <th>Jumlah</th>
-          </tr>
-
-          @foreach($student->transaction as $transaction)
-            <tr>
-              <td>{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-M-y') }}</td>
-              <td>{{ $transaction->transactionType->name }} {{ $transaction->tuition_month ? \Carbon\Carbon::parse($transaction->tuition_month)->format('M Y') : '' }}</td>
-              <td>{{ number_format($transaction->amount,0,',','.') }}</td>
-            </tr>
-          @endforeach
-        </table>
-        
-        
-      </div>
+    <div class="box box-primary" style="min-height: 100px;">
+        <section id="student_transactions">     
+          <div class="overlay">
+            <i class="fa fa-refresh fa-spin"></i>
+          </div>
+        </section>             
     </div>
   </div>
+
   @include('/admin/student/modal-achievement')
+  @include('/admin/transaction/modal')
+  
 
 </div>
 @endsection	

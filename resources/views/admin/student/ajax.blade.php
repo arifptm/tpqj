@@ -1,4 +1,11 @@
-  <script>    
+  <script>  
+
+
+
+     
+
+  $('#student-stat').load('/admin/data/block-student-statistic');
+
     /*
      *
      * iCheck function
@@ -33,29 +40,25 @@
 
     /*
      *
-     * Datatables
+     * Filtering Institution
      *
-     */
-    $datatable = $('#students-data').DataTable({
-      processing: true,
-      serverSide: true,
-      responsive: true,
-      autoWidth   : false,
-      order: [ 0, "desc" ],
-      ajax: '/data/students',  
-      columns: [
-        { data: 'id', name: 'id' },
-        { data: 'formatted_registered_date', name: 'formatted_registered_date', orderable: false, searchable: false},         
-        { data: 'institution.name', name: 'institution.name'}, 
-        { data: 'name_href', name: 'name_href'}, 
-        { data: 'gender_x', name: 'gender'},
-        { data: 'status', name: 'status'},
-        { data: 'actions', name: 'actions', orderable: false, searchable: false}
-      ],
-      createdRow: function(row, data, index) {
-          $(row).addClass('row'+data.id)
-        }  
-    }); 
+     */    
+    $('[name="chosen_institution[]"]').iCheck('check');
+
+    $(document).on('ifChecked ifUnchecked', '[name="chosen_institution[]"]', function() {         
+      var vins = institutionFilter()
+      $datatable.ajax.url( '/data/students/'+vins ).load();            
+    });
+
+    function institutionFilter(){
+      var ins = new Array;
+      $('[name="chosen_institution[]"]:checked').each ( function() {
+        ins.push ( $(this).val() );
+      });
+      if ( ins.length == 0 ){ vins = '0' } else { vins = ins.join('_')}
+      return vins;
+    };
+    
 
     /*
      *

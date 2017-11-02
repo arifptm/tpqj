@@ -55,46 +55,37 @@
 @section('content-main')
 
 <div class="row">
-    <div class="col-md-12">
-          <div class="box box-default collapsed-box box-solid">
-            <div class="box-header with-border" style="padding:5px;">              
-    
-                <button type="button" class="btn bg-olive" data-widget="collapse">
-                  <i class="fa fa-plus"></i> &nbsp; &nbsp;<h3 class="box-title"> Tampilkan lembaga</h3>
-                </button>
-              
-            
-            </div>
-            
-            <div class="box-body">
-          <div class="form-group icheck">             
-            @foreach ($institutions->chunk(5) as $chunk)
-              <div class="col-md-3">
-                @foreach ($chunk as $institution)
-                  {!! Form::checkbox('chosen_institution[]', $institution->id, false,  ['id'=>$institution->slug]) !!}
-                  {!! Form::label( $institution->slug, $institution->name , ['class'=>'control-label']) !!}<br>
-                @endforeach
-              </div>
-            @endforeach
-          </div>
-        </div>
-            </div>
-            
-          </div>
-
-
-
-
+  <div class="col-md-12">
+    <div class="box box-default collapsed-box box-solid">
       
-
-
+      <div class="box-header with-border" style="padding:5px;">              
+        <button type="button" class="btn bg-olive" data-widget="collapse">
+          <i class="fa fa-plus"></i> &nbsp; &nbsp;<h3 class="box-title"> Tampilkan lembaga</h3>
+        </button>
+      </div>
+      
+      <div class="box-body">
+        <div class="form-group icheck">             
+          @foreach ($institutions->chunk(5) as $chunk)
+            <div class="col-md-3">
+              @foreach ($chunk as $institution)
+                {!! Form::checkbox('chosen_institution[]', $institution->id, false,  ['id'=>$institution->slug]) !!}
+                {!! Form::label( $institution->slug, $institution->name , ['class'=>'control-label']) !!}<br>
+              @endforeach
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-  <div class="row">
-    <div class="col-md-8">
-      <div class="box">    
-        <div class="box-body" style="min-height:200px;">
-          <table class="table table-bordered" id="achievements-data">
-            <thead>
+  
+<div class="row">
+  <div class="col-md-8">
+    <div class="box">    
+      <div class="box-body" style="min-height:200px;">
+        <table class="table table-bordered" id="achievements-data">
+          <thead>
             <tr>              
               <th>ID</th>          
               <th>Tgl Lulus</th>
@@ -102,21 +93,21 @@
               <th>Kelas</th>              
               <th>Aksi</th>          
             </tr>
-            </thead>
-          </table>
-        </div>        
-        <div class="box-footer clearfix">        
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="row">        
-        <div id="achievement-stat">
-          <div class="loader" style="min-height: 200px;"></div>          
-        </div>        
+          </thead>
+        </table>
+      </div>        
+      <div class="box-footer clearfix">        
       </div>
     </div>
   </div>
-  @include('/admin/achievement/modal')
+
+  <div class="col-md-4">
+    <div class="row">        
+      <div id="achievement-stat">
+        <div class="loader" style="min-height: 200px;"></div>          
+      </div>        
+    </div>
+  </div>
+</div>
+@include('/admin/achievement/modal')
 @endsection

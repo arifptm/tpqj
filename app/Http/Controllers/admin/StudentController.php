@@ -14,8 +14,10 @@ use App\Stage;
 use App\Institution;
 use App\ClassGroup;
 use App\AlmarufTransaction;
+use App\TransactionType;
 
 use App\Achievement;
+
 
 use Auth;
 
@@ -32,11 +34,30 @@ class StudentController extends Controller
         return $ui;
     }
 
-    public function index(){
+    public function index(){        
+
         $groups = ClassGroup::all();
-        $institutions = Institution::whereIn('id',$this->userInstitutions())->orderBy('name','asc')->pluck('name','id')->toArray();
-        return view('admin.student.index',['groups'=>$groups, 'institutions'=> $institutions]);
+
+        $md_ins = new Institution;
+        $institutions = $md_ins->whereIn('id',$this->userInstitutions())->orderBy('name','asc')->pluck('name','id')->toArray(); //for modal input
+        $institutions_filter = $md_ins->filtered()->whereHas('student', function($q){$q->whereHas('achievement');})->get();
+
+        $userInstitutions = Institution::whereIn('id',$this->userInstitutions())->get();
+
+
+        return view('admin.student.index',['groups'=>$groups, 'institutions'=> $institutions, 'institutions_filter'=>$institutions_filter]);
+
     }
+
+    public function studentStatistic(){
+        $students = Student::filtered()->active()->with('institution')->get()->groupBy('institution_id');
+
+        //dd($students);
+
+        return view('admin.student.block-statistic', ['students'=>$students]);
+
+    }
+
 
     public function ajaxCreate(CreateStudent $request){        
         $input = $request->all();
@@ -74,51 +95,74 @@ class StudentController extends Controller
 
     public function show($slug)
     {
-        $stages = Stage::orderBy('id','asc')->get(); // For edit achievement
-        $student = Student::with(['group', 'transaction'=>function($q){
-            $q->orderBy('transaction_date','desc')->with('transactionType');
-        }])->whereSlug($slug)->first();        
+        $t_types = TransactionType::orderBy('id','asc')->get();
 
-        $achievements = Achievement::with('stage')->whereStudent_id($student->id)->orderBy('stage_id','asc')->get();
+        $class_groups = ClassGroup::all();
+
+        $stages = Stage::orderBy('id','asc')->get(); // For edit achievement        
+        $students = Student::active()->whereInstitution_id(9)->orderBy('fullname','asc')->get();        
+        foreach($students as $student){
+            $option_stu[$student->id] = str_limit($student->fullname,17,'~')."/".$student->nickname;
+        }
+        $student = Student::whereSlug($slug)->first();
+        return view('admin.student.show',['student'=>$student, 'students'=>$option_stu,  'stages'=>$stages, 't_types' => $t_types, 'class_groups' => $class_groups ]);
+    }
+
+    public function student($id){
+        $student = Student::find($id);        
+        return view('admin.student.block-student', ['student' => $student]);  
+    }
+
+    public function studentTransactions($id){
+        $tr = AlmarufTransaction::whereStudent_id($id)->with('transactionType')->orderBy('transaction_date', 'desc');
+        
+
+        
+        $total = $tr->sum('amount');
+        $transactions = $tr->paginate(10);        
+        return view('admin.student.block-transactions', ['transactions' => $transactions, 'total'=>$total]);  
+    }
+
+    public function studentAchievements($id){
+        $registered = Carbon::parse(Student::find($id)->registered_date);
+        
+        $achievements = Achievement::whereStudent_id($id)->with('stage')->orderBy('stage_id','asc')->get();
         if ($achievements->count() > 0 ) {
             $dur = $achievements[0]->achievement_date;
 
-            $a_dur = $achievements->each(function($item,$key) use(&$dur){
+            $a_dur = $achievements->each(function($item,$key) use(&$dur, $registered){
                 if($key == 0){
-                    $item->setAttribute('duration','...');
+                    $item->setAttribute('duration', $item->achievement_date->diff($registered)->format('%m bl + %d hr'));
                 } else {
-                    $item->setAttribute('duration', $item->achievement_date->diff($dur)->format('%m bln %d hr'));
+                    $item->setAttribute('duration', $item->achievement_date->diff($dur)->format('%m bl + %d hr'));
                 }
                 $dur = $item->achievement_date;
             });        
         } else {
             $a_dur = [''];
         }
-        //dd($student);        
         
-        return view('admin.student.show',['student'=>$student, 'achievements' => $achievements, 'stages'=>$stages ]);
+         return view('admin.student.block-achievements',['achievements'=>$achievements]);
     }
 
 
-    public function data(){
+    public function dataIndex($ins){
 
         $ui = $this->userInstitutions();
         
-        $student = Student::where('group_id','!=','5')->with(['institution', 'group'])->get();
+        if ($ins == 'all'){
+            $ins = Institution::pluck('id')->toArray();
+            $ins = implode('_', $ins);
+        }
+
+        $ins=explode('_', $ins);
+
+        $student = Student::where('group_id','!=','5')->whereIn('institution_id', $ins)->with(['institution', 'group']);
 
         $datatable = Datatables::of($student)
             ->addColumn('name_href', function ($student) {
-                return '<a href="/admin/students/'.$student->slug.'"><strong>'.$student->fullname.'</strong></a> ('.$student->nickname.')';                    
-            })
-
-            
-
-            ->addColumn('thumbnail_href', function ($student) {
-                if($student->image <> null)
-                    return '<a href="/admin/students/'.$student->id.'"><img src="/imagecache/thumbnail/'.$student->image.'" /></a>';
-                else
-                    return '<a href="/admin/students/'.$student->id.'"><img src="/imagecache/thumbnail/default.jpg" /></a>';
-            })       
+                return '<a href="/admin/students/'.$student->slug.'"><strong>'.str_limit($student->fullname,17,'~').'</strong></a>/'.$student->nickname;                    
+            })      
 
             ->addColumn('formatted_registered_date', function($student){
                 return \Carbon\Carbon::parse($student->registered_date)->format('d-m-y');
@@ -186,7 +230,7 @@ class StudentController extends Controller
                 }
             })
 
-            ->rawColumns(['name_href','thumbnail_href','formated_registered_date','actions','status','gender_x']);
+            ->rawColumns(['name_href','formated_registered_date','actions','status','gender_x']);
         return $datatable->make(true);
            
     }

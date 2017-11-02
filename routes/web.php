@@ -92,6 +92,7 @@ Route::group(['prefix'=>'admin'], function() {
 
 	Route::resource('class-groups', 'admin\ClassGroupController');
 	
+	Route::get('data/block-student-statistic', 'admin\StudentController@studentStatistic');
 	Route::post('students/ajax/update','admin\StudentController@ajaxUpdate');
 	Route::post('students/ajax/create','admin\StudentController@ajaxCreate');
 	Route::post('students/ajax/delete','admin\StudentController@ajaxDelete');
@@ -111,10 +112,15 @@ Route::get('data/almaruf-transactions/{arg}','admin\AlmarufTransactionController
 
 Route::get('data/achievements/{ins}/{stg}', [ 'uses'=>'admin\AchievementController@indexData' ]);
 
+Route::get('data/student/{student_id}', 'admin\StudentController@student');
+Route::get('data/student-achievements/{student_id}', 'admin\StudentController@studentAchievements');
+Route::get('data/student-transactions/{student_id}', 'admin\StudentController@studentTransactions');
+
 Route::get('pub/data/persons','pub\PersonController@dataIndex');	
 Route::get('pub/data/students','pub\StudentController@dataIndex');	
 Route::get('data/persons','admin\PersonController@data');
-Route::get('data/students','admin\StudentController@data');
+Route::get('data/students/{ins}','admin\StudentController@dataIndex');
+
 Route::get('coba', function(){
 	return View::make('public.include.last_achievement');
 });
