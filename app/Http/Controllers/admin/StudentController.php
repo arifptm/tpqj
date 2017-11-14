@@ -42,15 +42,14 @@ class StudentController extends Controller
         $institutions = $md_ins->whereIn('id',$this->userInstitutions())->orderBy('name','asc')->pluck('name','id')->toArray(); //for modal input
         $institutions_filter = $md_ins->filtered()->whereHas('student', function($q){$q->whereHas('achievement');})->get();
 
-        $userInstitutions = Institution::whereIn('id',$this->userInstitutions())->get();
+        $userInstitutions = Institution::whereIn('id',$this->userInstitutions())->pluck('id')->toArray();
 
-
-        return view('admin.student.index',['groups'=>$groups, 'institutions'=> $institutions, 'institutions_filter'=>$institutions_filter]);
+        return view('admin.student.index',['groups'=>$groups, 'institutions'=> $institutions, 'institutions_filter'=>$institutions_filter, 'userInstitutions'=>$userInstitutions]);
 
     }
 
     public function studentStatistic(){
-        $students = Student::filtered()->active()->with('institution')->get()->groupBy('institution_id');
+        $students = Student::filtered()->with('institution')->get()->groupBy('institution_id');
 
         //dd($students);
 
@@ -146,18 +145,27 @@ class StudentController extends Controller
     }
 
 
-    public function dataIndex($ins){
+    public function dataIndex($ins, $group, $status){
 
         $ui = $this->userInstitutions();
         
-        if ($ins == 'all'){
-            $ins = Institution::pluck('id')->toArray();
-            $ins = implode('_', $ins);
+        ($ins == 'default') ? $ins = implode('_', $ui) : null;
+        ($group == 'all') ? $group = "1_3" : null;
+        
+        $ins=explode('_', $ins);
+        $group = explode('_', $group);        
+
+        $query = new Student;
+        if ($status == '1'){
+            $query = $query -> whereNull('stop_date');
+        } else if ($status == '0'){
+            $query = $query -> whereNotNull('stop_date');
         }
 
-        $ins=explode('_', $ins);
-
-        $student = Student::where('group_id','!=','5')->whereIn('institution_id', $ins)->with(['institution', 'group']);
+        $student = $query ->where('group_id','!=','5')
+            ->whereIn('institution_id', $ins)
+            ->whereIn('group_id', $group)
+            ->with(['institution', 'group']);
 
         $datatable = Datatables::of($student)
             ->addColumn('name_href', function ($student) {

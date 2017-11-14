@@ -1,18 +1,60 @@
 @extends('template.layout')
 
 @section('header-scripts')
-
   <link rel="stylesheet" href="/bower_components/jquery.calendars-2.1.0/css/ui.calendars.picker.css">
   <link rel="stylesheet" href="/bower_components/jquery.calendars-2.1.0/css/jquery.calendars.picker.css">
   <link rel="stylesheet" href="/bower_components/AdminLTE/plugins/iCheck/flat/purple.css">
   <link rel="stylesheet" href="/bower_components/AdminLTE/plugins/select2/select2.css">
-
-
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
+
+@section('content-top')
+  <div class="alert bg-green lead" style='display:none;'><i class="icon fa fa-check"></i> <span id="ajaxmessage"></span></div>
+  <h1>Data Santri</h1><div id="cur_student_id" class="hidden">{{ $student->id }}</div>
+@endsection
+
+@section('content-main')
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="box box-primary" style="min-height: 100px;">
+        <div id="student">     
+          <div class="overlay">
+            <i class="fa fa-refresh fa-spin"></i>
+          </div>
+        </div>  
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="box box-primary" style="min-height: 100px;">
+        <section id="student_achievements">     
+          <div class="overlay">
+            <i class="fa fa-refresh fa-spin"></i>
+          </div>
+        </section>  
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="box box-primary" style="min-height: 100px;">
+          <section id="student_transactions">     
+            <div class="overlay">
+              <i class="fa fa-refresh fa-spin"></i>
+            </div>
+          </section>             
+      </div>
+    </div>
+
+    @include('/admin/student/modal-achievement')    
+
+  </div>
+
+@endsection 
+
 
 @section('footer-scripts')
   <script src="/bower_components/AdminLTE/plugins/iCheck/icheck.min.js"></script>
-
   <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.plugin.js"></script>
   <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.min.js"></script>
   <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.plus.min.js"></script>
@@ -20,53 +62,20 @@
   <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.islamic.js"></script>
   <script src="/bower_components/jquery.calendars-2.1.0/js/jquery.calendars.picker-id.js"></script>    
   <script src="/bower_components/AdminLTE/plugins/select2/select2.min.js"></script>
+  <script src="/js/custom.js"></script>
+  @include('/admin/student/ajax-achievement')
+
+
 
   <script>
-    $('input[type="checkbox"], input[type="radio"]').iCheck({
-      checkboxClass: 'icheckbox_flat-purple',
-      radioClass   : 'iradio_flat-purple'
-    }); 
-  </script>
-
-  <script>
-    $('.select2').select2();
-  </script>
-
-  <script>
-    sid = $('#student_id').text()
+    /*
+    ** Load content and block for page with ID
+    */
+    sid = $('#cur_student_id').text()
     $('#student_achievements').load('/data/student-achievements/'+sid);    
     $('#student_transactions').load('/data/student-transactions/'+sid);    
     $('#student').load('/data/student/'+sid);    
   </script>
-
-
-  <script>
-    $(document).on('click', '.edit-achievement', function() {
-      $('#id').val($(this).data('id'));
-      $('#student_id').val($('#student_id').text());
-      $('#achievement_date').val($(this).data('achievement_date'));
-      $('#notes').val($(this).data('notes')); 
-      $('#achievement-modal').modal('show');
-
-      var student_stage_id = $(this).data('stage_id')
-      $("input[name='stage_id'][value='"+student_stage_id+"']").iCheck('check');                                 
-
-      dt = ($(this).data('achievement_date')).split('-')      
-      $('#acda_alt').val(dt[2]+'-'+dt[1]+'-'+dt[0]);
-      var gc = $.calendars.instance('gregorian');
-      var d = gc.newDate(
-          parseInt(dt[2], 10),
-          parseInt(dt[1], 10),
-          parseInt(dt[0], 10)
-        ).toJD();
-
-      var gcn = $.calendars.instance('islamic').fromJD(d);
-        $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
-        $('#achida_alt').val(gcn.formatDate('yyyy-mm-dd'))
-        
-    });
-  </script>
-
 
   <script>
     $('#achievement_date').calendarsPicker({
@@ -227,49 +236,8 @@
 
 @endsection 
 
-@section('content-top')
-  <div class="alert bg-green lead" style='display:none;'><i class="icon fa fa-check"></i> <span id="ajaxmessage"></span></div>
-  <h1>Data Santri</h1><div id="student_id" class="hidden">{{ $student->id }}</div>
-@endsection
 
-@section('content-main')
 
-<div class="row">
-  <div class="col-md-3">
-    <div class="box box-primary" style="min-height: 100px;">
-      <div id="student">     
-        <div class="overlay">
-          <i class="fa fa-refresh fa-spin"></i>
-        </div>
-      </div>  
-    </div>
-  </div>
 
-  <div class="col-md-4">
-    <div class="box box-primary" style="min-height: 100px;">
-      <section id="student_achievements">     
-        <div class="overlay">
-          <i class="fa fa-refresh fa-spin"></i>
-        </div>
-      </section>  
-    </div>
-  </div>
-
-  <div class="col-md-5">
-    <div class="box box-primary" style="min-height: 100px;">
-        <section id="student_transactions">     
-          <div class="overlay">
-            <i class="fa fa-refresh fa-spin"></i>
-          </div>
-        </section>             
-    </div>
-  </div>
-
-  @include('/admin/student/modal-achievement')
-  @include('/admin/transaction/modal')
-  
-
-</div>
-@endsection	
 
 

@@ -1,20 +1,23 @@
-  <script>  
+<script>  
 
-
-
-     
-
+  //AJAX load block statistic
   $('#student-stat').load('/admin/data/block-student-statistic');
 
-    /*
-     *
-     * iCheck function
-     *
-     */
-    $('input[type="checkbox"], input[type="radio"]').iCheck({
-      checkboxClass: 'icheckbox_flat-purple',
-      radioClass   : 'iradio_flat-purple'
-    });
+  //AJAX filtering by Institution
+  $(document).on('ifChecked ifUnchecked', '[name="chosen_institution[]"]', function() {         
+    var vins = institutionFilter()
+    $datatable.ajax.url( '/data/students/'+vins+'/1_3'+'/1' ).load();            
+  });
+
+  //Datatable load from block Statistic
+  $(document).on('click', '.class_group', function(){    
+    var ins_id = $(this).data('ins_id')
+    var class_group = $(this).data('id')
+    var status = $(this).data('status')
+    $datatable.ajax.url( '/data/students/'+ins_id+'/'+class_group+'/'+status).load(); 
+  });
+
+
 
     $('#status').on('ifChecked', function(event){      
       dt = new Date(); d = ('0'+(dt.getDate())).slice(-2); m = ('0'+(dt.getMonth()+1)).slice(-2); y = dt.getFullYear();         
@@ -43,21 +46,11 @@
      * Filtering Institution
      *
      */    
-    $('[name="chosen_institution[]"]').iCheck('check');
 
-    $(document).on('ifChecked ifUnchecked', '[name="chosen_institution[]"]', function() {         
-      var vins = institutionFilter()
-      $datatable.ajax.url( '/data/students/'+vins ).load();            
-    });
 
-    function institutionFilter(){
-      var ins = new Array;
-      $('[name="chosen_institution[]"]:checked').each ( function() {
-        ins.push ( $(this).val() );
-      });
-      if ( ins.length == 0 ){ vins = '0' } else { vins = ins.join('_')}
-      return vins;
-    };
+
+
+
     
 
     /*
@@ -266,3 +259,14 @@
     });
 
   </script>
+<script>
+    function institutionFilter(){
+      var ins = new Array;
+      $('[name="chosen_institution[]"]:checked').each ( function() {
+        ins.push ( $(this).val() );
+      });
+      if ( ins.length == 0 ){ vins = '0' } else { vins = ins.join('_')}
+      return vins;
+    };
+
+    </script>

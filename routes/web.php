@@ -119,7 +119,7 @@ Route::get('data/student-transactions/{student_id}', 'admin\StudentController@st
 Route::get('pub/data/persons','pub\PersonController@dataIndex');	
 Route::get('pub/data/students','pub\StudentController@dataIndex');	
 Route::get('data/persons','admin\PersonController@data');
-Route::get('data/students/{ins}','admin\StudentController@dataIndex');
+Route::get('data/students/{ins}/{group}/{status}','admin\StudentController@dataIndex');
 
 Route::get('coba', function(){
 	return View::make('public.include.last_achievement');

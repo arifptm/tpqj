@@ -1,6 +1,6 @@
     <a href="/" class="logo">
-      <span class="logo-mini"><b>QJ</b></span>
-      <span class="logo-lg"><b>Qiraati</b> Jogja</span>
+      <span class="logo-mini"><b>QD</b></span>
+      <span class="logo-lg"><b>Qiraati</b> DIY</span>
     </a>
     
     <nav class="navbar navbar-static-top">

@@ -60,8 +60,8 @@
 			'': {
 				name: 'Islamic',
 				epochs: ['BH', 'AH'],
-				monthNames: ['Muharram', 'Safar', 'Rabi\' al-awwal', 'Rabi\' al-thani', 'Jumada al-awwal', 'Jumada al-thani',
-				'Rajab', 'Sha\'aban', 'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'],
+				monthNames: ['01.Muharram', '02.Safar', '03.Rabi\' al-awwal', '04.Rabi\' al-thani', '05.Jumada al-awwal', '06.Jumada al-thani',
+				'07.Rajab', '08.Sha\'aban', '09.Ramadan', '10.Shawwal', '11.Dhu al-Qi\'dah', '12.Dhu al-Hijjah'],
 				monthNamesShort: ['Muh', 'Saf', 'Rab1', 'Rab2', 'Jum1', 'Jum2', 'Raj', 'Sha\'', 'Ram', 'Shaw', 'DhuQ', 'DhuH'],
 				dayNames: ['Yawm al-ahad', 'Yawm al-ithnayn', 'Yawm ath-thulaathaa\'',
 				'Yawm al-arbi\'aa\'', 'Yawm al-khamīs', 'Yawm al-jum\'a', 'Yawm as-sabt'],

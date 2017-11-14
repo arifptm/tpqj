@@ -1,37 +1,39 @@
-<div class="col-md-12">
-  <div class="box">    
+
+    
     <div class="box-header">
-      <h3 class="box-title">Statistik Santri Aktif
+      <h3 class="box-title">Statistik Santri TPQ DIY
       </h3>
     </div>
     <div class="box-body">
       <table class="table-bordered table">
         <tr class='bg-blue'>
-          <th rowspan='2' style="vertical-align: middle;">Nama Lembaga</th>
-          <th colspan='2'>Jumlah</th>
-          <th rowspan='2' style="vertical-align: middle;">Total</th>
-          <th rowspan='2' style="vertical-align: middle;"></th>
+          <th rowspan='2' class="text-center" style="vertical-align: middle;">Nama Lembaga</th>
+          <th colspan='4' class="text-center">Jumlah</th>
+          
+
         </tr>
         <tr class='bg-blue'>
-          <th>TPQA</th>
-          <th>TPQD</th>          
+          <th class="text-right">TPQ</th>
+          <th class="text-right">TPQD</th>          
+          <th class="text-right">Aktif</th>
+          <th class="text-right">NoAkt</th>
         </tr>
         @foreach ($students as $key=>$student)                
         <tr>
           <td>
-            <a href="/admin/institutions/{{ $student[0]->institution->slug }}"><b>{{ $student[0]->institution->name }}</b>
+            <a href="#" class="class_group" data-id="1_3" data-ins_id="{{ $key }}" data-status="999"><b>{{ $student[0]->institution->name }}</b></a> 
           </td>
           <td class="text-right">
-            {{ number_format($tpqa_sum[] = $student->where('group_id',1)->count(),0,',','.') }}
+            <a href="#" class="class_group" data-id="1" data-ins_id="{{ $key }}" data-status="1"><b>{{ number_format($tpqa_sum[] = $student->where('stop_date',null)->where('group_id',1)->count(),0,',','.') }}</b></a>
           </td>
           <td class="text-right">
-            {{ number_format($tpqd_sum[] = $student->where('group_id',3)->count(),0,',','.') }}
+            <a href="#" class="class_group" data-id="3" data-ins_id="{{ $key }}" data-status="1"><b>{{ number_format($tpqd_sum[] = $student->where('stop_date',null)->where('group_id',3)->count(),0,',','.') }}</b></a>
           </td>
           <td class="text-right">
-            {{ number_format($total_sum[] = $student->count(),0,',','.') }}
+            <a href="#" class="class_group" data-id="1_3" data-ins_id="{{ $key }}" data-status="1"><b>{{ number_format($total_sum[] = $student->where('stop_date',null)->count(),0,',','.') }}</b></a>
           </td>
-          <td>
-            <button id="show-arc" class="btn btn-xs btn-primary" data-institution_id="all" data-stage_id = "{{ $students }}" ><i class="fa fa-eye"></i></button>
+          <td class="text-right">
+            <a href="#" class="class_group" data-id="1_3" data-ins_id="{{ $key }}" data-status="0"><b>{{ number_format($all_sum[] = ($student->count() - $student->where('stop_date',null)->count()),0,',','.') }}</b></a>            
           </td>
         </tr>
         @endforeach                
@@ -40,9 +42,7 @@
           <th class="text-right">{{  number_format(array_sum($tpqa_sum),0,',','.') }}</th>          
           <th class="text-right">{{  number_format(array_sum($tpqd_sum),0,',','.') }}</th>          
           <th class="text-right">{{  number_format(array_sum($total_sum),0,',','.') }}</th> 
-          <th></th>          
+          <th class="text-right">{{  number_format(array_sum($all_sum),0,',','.') }}</th> 
         </tr>
       </table>            
     </div>
-  </div>
-</div>

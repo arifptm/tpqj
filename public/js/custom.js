@@ -1,8 +1,18 @@
 
-    $('input[type="checkbox"].flat-purple, input[type="radio"].flat-purple').iCheck({
-      checkboxClass: 'icheckbox_flat-purple',
-      radioClass   : 'iradio_flat-purple'
-    })
+  $('input[type="checkbox"], input[type="radio"]').iCheck({
+    checkboxClass: 'icheckbox_flat-purple',
+    radioClass   : 'iradio_flat-purple'
+  }); 
+
+  // $('.select2').select2();
+
+
+
+
+
+
+
+
     
     $('input.item').on('ifChecked', function(event){
       var t = $(this).attr('name');
@@ -29,3 +39,6 @@
         $(this).iCheck('uncheck');
       });
     });    
+
+
+

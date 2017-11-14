@@ -186,7 +186,7 @@ class AchievementController extends Controller
 	public function ajaxDelete(Request $request){
         $achievement = Achievement::findOrFail($request->id);
         $achievement->delete();
-        return response()->json(['message'=>'Data transaksi berhasil dihapus.']);
+        return response()->json(['message'=>'Data kelulusan berhasil dihapus.']);
     }
 
 }

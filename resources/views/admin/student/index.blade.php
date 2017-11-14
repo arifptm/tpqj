@@ -27,10 +27,13 @@
   <script src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script> 
   <script src="https://cdn.datatables.net/responsive/2.2.0/js/dataTables.responsive.min.js"></script>
   <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>   
+
+  <script src="/js/custom.js"></script>
+  
   @include('admin.student.datatable')
   @include('admin.student.ajax')
 
-  <script src="/js/custom.js"></script>
+  
   @endsection
 
 @section('content-top')
@@ -42,13 +45,14 @@
 
 @section('content-main')
 
+<!--
 <div class="row">
-  <div class="col-md-12">
+   <div class="col-md-12">
     <div class="box box-default collapsed-box box-solid">
       
       <div class="box-header with-border" style="padding:5px;">              
         <button type="button" class="btn bg-olive" data-widget="collapse">
-          <i class="fa fa-plus"></i> &nbsp; &nbsp;<h3 class="box-title"> Tampilkan lembaga</h3>
+          <i class="fa fa-plus"></i> &nbsp; &nbsp;<h3 class="box-title"> Pilih lembaga untuk ditampilkan</h3>
         </button>
       </div>
       
@@ -57,7 +61,11 @@
           @foreach ($institutions_filter->chunk(5) as $chunk)
             <div class="col-md-3">
               @foreach ($chunk as $institution)
-                {!! Form::checkbox('chosen_institution[]', $institution->id, false,  ['id'=>$institution->slug]) !!}
+                @if (in_array($institution->id, $userInstitutions))
+                  {!! Form::checkbox('chosen_institution[]', $institution->id, false,  ['id'=>$institution->slug, 'checked'=>'checked']) !!}
+                @else
+                  {!! Form::checkbox('chosen_institution[]', $institution->id, false,  ['id'=>$institution->slug]) !!}
+                @endif
                 {!! Form::label( $institution->slug, $institution->name , ['class'=>'control-label']) !!}<br>
               @endforeach
             </div>
@@ -66,7 +74,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <div class="row">
   <div class="col-md-8">
@@ -91,10 +99,12 @@
   
 
   <div class="col-md-4">
-    <div class="row">        
-      <div id="student-stat">
-        <div class="loader" style="min-height: 200px;"></div>          
-      </div>        
+    <div class="box box-primary" style="min-height: 100px;">
+        <section id="student-stat">     
+          <div class="overlay">
+            <i class="fa fa-refresh fa-spin"></i>
+          </div>
+        </section>        
     </div>
   </div>
 
@@ -103,3 +113,5 @@
 @include('/admin/student/modal')
 
 @endsection
+
+

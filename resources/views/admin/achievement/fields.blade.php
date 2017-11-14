@@ -1,4 +1,11 @@
 <div class="box-body">
+	
+	<div class="form-group">
+		{!! Form::label('student_id', 'Nama santri:', ['class'=>'control-label']) !!}
+		{!! Form::select('student_id', ['' => '-Silakan Pilih-'] + $students ,false, ['class' => 'form-control select2', 'id'=>'student_id','style'=>'width: 100%;']) !!}
+		<div class="help-block err student_id" style="display:none"></div>
+	</div>
+
 	<div class="form-group">
 		<div class='row'>
 			<div class='col-md-6'>
@@ -21,11 +28,7 @@
 		</div>
 	</div>
 
-	<div class="form-group">
-		{!! Form::label('student_id', 'Nama santri:', ['class'=>'control-label']) !!}
-		{!! Form::select('student_id', ['' => '-Silakan Pilih-'] + $students ,false, ['class' => 'form-control select2', 'id'=>'student_id','style'=>'width: 100%;']) !!}
-		<div class="help-block err student_id" style="display:none"></div>
-	</div>
+
 
 	<div class="form-group icheck">				
 		<div class="row">

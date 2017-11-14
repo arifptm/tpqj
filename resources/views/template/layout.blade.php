@@ -20,7 +20,7 @@
 </head>
 
 <body class="hold-transition skin-purple fixed sidebar-mini">
-  <div class='loader'></div>
+  
 <div class="wrapper">  
   <header class="main-header">
     @include('template.header')

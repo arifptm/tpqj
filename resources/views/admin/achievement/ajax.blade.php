@@ -177,39 +177,37 @@
     });
 
 
-    $('.modal-footer').on('click', '#submit-update', function() {    
-      var form = $('#myForm')[0];
-      var formData = new FormData(form);      
-      $.ajax({
-        type: 'post',
-        url: '/admin/achievements/ajax/update',
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: formData,
-        type:"POST",
-        contentType: false,
-        processData: false,
-        
-        error: function(response){
-          var msg = response.responseJSON.errors;
-          $('#modalmessage').html(msg.stage_id).parent().slideDown();
-        },
+$(document).on('click', '#submit-create', function(e) {      
+    var form = $('#achievementForm');
+    var formData = new FormData(form);
+    $.ajax({
+      url: '/admin/achievements/ajax/create',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      data: formData,
+      type:"POST",
+      contentType: false,
+      processData: false,
 
-        success: function(response) {   
-          var vins = institutionFilter()
-          $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
-          $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
-          $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
-          // $('#achievements-data').DataTable().ajax.reload();
-          // $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
-          clearForm();
-          
-          $('#modal-edit-achievement').modal('hide');
-          $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil diperbarui.').parent().slideDown();  
-        }
-      });
+      error: function(response){
+        var msg = response.responseJSON.errors;
+        $('#modalmessage').html(msg.stage_id).parent().slideDown();
+      },
+
+      success: function(response){
+        var vins = institutionFilter()
+        $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
+        $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+        $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
+        
+        clearForm();          
+
+        $('#modal-create-achievement').modal('hide');
+        $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil disimpan.').parent().slideDown();          
+      }
     });
+  });
 
 
 

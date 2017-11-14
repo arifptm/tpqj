@@ -6,7 +6,7 @@
 	"infoPostFix":    "",
 	"thousands":      ".",
 	"loadingRecords": "Loading...",
-	"processing":     "<img src='/assets/ajax_loader.svg'>",
+	"processing":     "<div class='overlay'><i class='fa fa-refresh fa-spin'></i></div>",
 	"search":         "Cari:",
 	"zeroRecords":    "Tidak ditemukan",
 	"paginate": {

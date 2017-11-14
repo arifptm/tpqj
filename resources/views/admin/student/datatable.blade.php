@@ -8,7 +8,7 @@ $datatable = $('#students-data').DataTable({
   autoWidth : false,
   pageLength : 15,
   order: [ 0, "desc" ],
-  ajax: '/data/students/all',  
+  ajax: '/data/students/default/all/1',
   columns: [
     { data: 'id', name: 'id' },
     { data: 'formatted_registered_date', name: 'formatted_registered_date', orderable: false, searchable: false},         
@@ -19,7 +19,10 @@ $datatable = $('#students-data').DataTable({
     { data: 'actions', name: 'actions', orderable: false, searchable: false}
   ],
   createdRow: function(row, data, index) {
-      $(row).addClass('row'+data.id)
-    }  
+    $(row).addClass('row'+data.id)
+  },
+  language: {        
+    'url': '/assets/dt.indonesian.json'
+  }
 });
 </script> 
