@@ -21,13 +21,15 @@
   <script src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script> 
   <script src="https://cdn.datatables.net/responsive/2.2.0/js/dataTables.responsive.min.js"></script>
   <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>   
-   
+  
+  <script src="/js/custom.js"></script>  
+
   @include('admin.transaction.datatables')
   @include('admin.transaction.ajax')
 
 
 
-  <script src="/js/custom.js"></script>
+  
   @endsection
 
 @section('content-top')

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use \Carbon\Carbon;
+use Auth;
 
 class Student extends Model
 {
@@ -22,6 +23,11 @@ class Student extends Model
 
     public function scopeActive($query){
         return $query->where('stop_date', '=', null );
+    }
+
+    public function scopeHeaded($query){
+        $ui = Auth::user()->institution->pluck('id')->toArray();
+        return $query->whereIn('institution_id', $ui);
     }
 
     public function lastAchievement(){

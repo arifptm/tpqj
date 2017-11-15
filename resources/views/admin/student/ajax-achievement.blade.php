@@ -1,4 +1,62 @@
 <script>
+  /*
+  ** Default date when create achievement
+  */
+
+  $('#achievement_date').calendarsPicker({
+    showTrigger: '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>',
+    calendar: $.calendars.instance('gregorian','id'),
+    prevText: 'M', commandsAsDateFormat: true,
+    nextText: 'M', commandsAsDateFormat: true,
+    dateFormat: 'dd-mm-yyyy',
+    altField: '#acda_alt',
+    altFormat: 'yyyy-mm-dd',
+    autoSize: true,
+    maxDate: 0
+  });
+
+  $('#achievement_hijri_date').calendarsPicker({
+    showTrigger: '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>',
+    calendar: $.calendars.instance('islamic','id'),
+    prevText: 'M', commandsAsDateFormat: true,
+    nextText: 'M', commandsAsDateFormat: true,
+    dateFormat: 'dd-mm-yyyy',
+    altField: '#achida_alt',
+    altFormat: 'yyyy-mm-dd',
+    autoSize: true,
+    maxDate: 0
+  });
+
+  $('#achievement_date').change(function(){
+    dt = ($(this).val()).split('-');
+
+    var gc = $.calendars.instance('gregorian');
+    var d = gc.newDate(
+      parseInt(dt[2], 10),
+      parseInt(dt[1], 10),
+      parseInt(dt[0], 10)).toJD();
+
+    var gcn = $.calendars.instance('islamic').fromJD(d);
+     $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
+     $('#achida_alt').val(gcn.formatDate('yyyy-mm-dd'))
+  });
+
+  $('#achievement_hijri_date').change(function(){
+    dt = ($(this).val()).split('-');
+
+    var gc = $.calendars.instance('islamic');
+    var d = gc.newDate(
+      parseInt(dt[2], 10),
+      parseInt(dt[1], 10),
+      parseInt(dt[0], 10)).toJD();
+
+    var gcn = $.calendars.instance('gregorian').fromJD(d);
+     $('#achievement_date').val(gcn.formatDate('dd-mm-yyyy'))
+     $('#acda_alt').val(gcn.formatDate('yyyy-mm-dd'))
+  });
+</script>
+  
+<script>
   
   /*
   * Edit Achievement - open form

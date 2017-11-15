@@ -1,11 +1,11 @@
       <div class="box-header with-border"> 
         <h3 class="box-title">Riwayat Transaksi
-        <span class="btn btn-xs btn-primary"><i class="fa fa-plus-circle"></i> <b>Tambah baru</b></span></h3></h3>
+          <button id="btn-modal-create-transaction" class="btn btn-xs btn-primary"><i class="fa fa-plus-circle"></i> <b>Tambah baru</b></button>
+        </h3>
       </div>
       
       @if (count($transactions) > 0)        
             <div class="box-body">  
-
             <table class="table table-bordered table-condensed">
               <tr class="bg-blue">
                 <th>Tanggal</th>
@@ -38,8 +38,6 @@
                             data-notes='{{ $transaction->notes }}' >
                             <i class='glyphicon glyphicon-edit'></i>
                           </button>
-
-
                       
                             <i class='glyphicon glyphicon-edit'></i> Edit
                           </button>

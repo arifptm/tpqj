@@ -3,7 +3,7 @@
 
       <div class="box-header with-border"> 
         <h3 class="box-title">Riwayat Belajar
-          <button id="btn-modal-create-achievement" class="btn btn-xs btn-primary" ><i class="fa fa-plus-circle"></i> <b>Tambah baru</b></button>
+          <button id="btn-modal-create-achievement" class="btn btn-xs btn-primary"><i class="fa fa-plus-circle"></i> <b>Tambah baru</b></button>
         </h3>
       </div>
       <div class="box-body"> 

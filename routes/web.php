@@ -168,3 +168,10 @@ Route::get('/setroles', function(){
 	//Bouncer::sync($user)->roles('admin');
 	//Bouncer::sync($user)->abilities($abilities);
 });
+	
+	Route::get('/umi', function(){
+		$s = App\Student::where('institution_id','9')->where('group_id','=','3')->orderBy('fullname','asc')->get();
+		foreach ($s as $v) {
+			echo $v->fullname.",".$v->birth_place.",".optional($v->birth_date)->format('d-m-Y').",".$v->parent.",".$v->address."<br>";
+		}
+	});

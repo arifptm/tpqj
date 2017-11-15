@@ -38,11 +38,12 @@
   
   <script src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script> 
   <script src="https://cdn.datatables.net/responsive/2.2.0/js/dataTables.responsive.min.js"></script>
-  <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>   
+  <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+
   @include('admin.achievement.datatables')
   @include('admin.achievement.ajax')
 
-  <script src="/js/custom.js"></script>
+  
   @endsection
 
 @section('content-top')
@@ -53,32 +54,6 @@
 @endsection
 
 @section('content-main')
-
-<div class="row">
-  <div class="col-md-12">
-    <div class="box box-default collapsed-box box-solid">
-      
-      <div class="box-header with-border" style="padding:5px;">              
-        <button type="button" class="btn bg-olive" data-widget="collapse">
-          <i class="fa fa-plus"></i> &nbsp; &nbsp;<h3 class="box-title"> Tampilkan lembaga</h3>
-        </button>
-      </div>
-      
-      <div class="box-body">
-        <div class="form-group icheck">             
-          @foreach ($institutions->chunk(5) as $chunk)
-            <div class="col-md-3">
-              @foreach ($chunk as $institution)
-                {!! Form::checkbox('chosen_institution[]', $institution->id, false,  ['id'=>$institution->slug]) !!}
-                {!! Form::label( $institution->slug, $institution->name , ['class'=>'control-label']) !!}<br>
-              @endforeach
-            </div>
-          @endforeach
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
   
 <div class="row">
   <div class="col-md-8">

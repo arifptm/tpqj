@@ -6,10 +6,7 @@
         @endif
         <h3 class="profile-username text-center">{{$student->fullname}}</h3>
         <h5 class="text-center">{{ $student->address }}</h5>
-        <ul class="list-group list-group-unbordered">
-          
-            <div id ="student_id" class="hidden">{{ $student->id }}</div>
-          
+        <ul class="list-group list-group-unbordered">          
           <li class="list-group-item">
             <b>Nama panggilan</b> <span class="pull-right">{{ $student->nickname or '...' }}</span>
           </li>

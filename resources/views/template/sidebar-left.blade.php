@@ -13,6 +13,21 @@
         <p>{{ Auth::user()->name }}</p>
         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
       </div>
+      <div class="clearfix"></div>
+      <hr>
+      <div class="text-aqua">
+        @foreach (Auth::user()->institution as $institution)
+          @php ($ins_id[] = $institution->id)
+          @php ($ins_name[] = $institution->name)              
+        @endforeach        
+        <dl>
+          <dt>Lembaga:</dt>
+           <dd style="white-space:normal">
+            {{ implode (", ", $ins_name) }}
+            <span class="hidden" id="userInstitutionIds">{{ implode ("_", $ins_id) }}</span>
+          </dd>
+        </dl>
+      </div>
     </div>
 
 

@@ -53,16 +53,22 @@ class AchievementController extends Controller
 
 
     public function achievementStatistic($ins){
+
+        $institutions = Institution::filtered()->whereHas('student', function($q){$q->whereHas('achievement');})->get();
+
         if ($ins == 'all'){
-            $ins = Institution::pluck('id')->toArray();
-            $ins = implode('_', $ins);
+            // $ins = Institution::pluck('id')->toArray();
+            // $ins = implode('_', $ins);
+            $ins ="";
         }
 
         $ins = explode('_', $ins);
 
-        $achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) use ($ins) {$q->whereIn('institution_id',$ins); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
+        //$achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) use ($ins) {$q->whereIn('institution_id',$ins); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
+
+        $achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) {$q->headed(); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
         
-        return view('admin.achievement.block-statistic', ['achievements'=>$achievements]);
+        return view('admin.achievement.block-statistic', ['achievements'=>$achievements, 'institutions'=>$institutions]);
     }
 
 

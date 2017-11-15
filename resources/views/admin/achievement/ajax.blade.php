@@ -1,13 +1,11 @@
 <script>
-    $('input[type="checkbox"], input[type="radio"]').iCheck({
-      checkboxClass: 'icheckbox_flat-purple',
-      radioClass   : 'iradio_flat-purple'
-    });
+
+  //load block statistic
+    $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
 
     $('.select2').select2();
 
-
-
+  // init calendar for create new achievement
     $('#achievement_date').calendarsPicker({
       showTrigger: '<div class="input-group-addon"><i class="fa fa-calendar"></i></div>',
       calendar: $.calendars.instance('gregorian','id'),
@@ -63,15 +61,9 @@
 
     $('[name="chosen_institution[]"]').iCheck('check');
 
-    $(document).on('ifChecked ifUnchecked', '[name="chosen_institution[]"]', function() {         
-      var vins = institutionFilter()
-      $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
-      $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
-      $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
-    });
 
 
-    $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
+
 
     
     function institutionFilter(){

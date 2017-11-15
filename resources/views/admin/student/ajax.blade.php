@@ -40,22 +40,11 @@
       $('.parent_wrapper').slideDown();
     });
 
-
-    /*
-     *
-     * Filtering Institution
-     *
-     */    
-
-
-
-
-
     
 
     /*
      *
-     * Create Person
+     * Create Student
      *
      */
     $('#btn-modal-create').click(function() {
@@ -259,6 +248,7 @@
     });
 
   </script>
+
 <script>
     function institutionFilter(){
       var ins = new Array;
