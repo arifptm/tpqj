@@ -8,7 +8,7 @@
     autoWidth   : false,
     pageLength: 20,
     order: [ 0, "desc" ],
-    ajax: '/data/achievements/all/all',  
+    ajax: '/data/achievements/default/all',  
     columns: [
       { data: 'id', name: 'id', searchable: false, "visible": false },
       
@@ -27,13 +27,5 @@
       'url': '/assets/dt.indonesian.json'
     }    
   }); 
-
-  
-
-    $(document).on('click', '#show-arc', function() {        
-      stage_id = $(this).data('stage_id')
-      institution_id = $(this).data('institution_id')
-      $datatable.ajax.url( '/data/achievements/' + institution_id+'/'+stage_id ).load();
-    });
 
 </script>

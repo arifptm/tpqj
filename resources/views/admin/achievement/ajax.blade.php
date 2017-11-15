@@ -1,9 +1,31 @@
 <script>
 
-  //load block statistic
-    $('#achievement-stat').load('/admin/data/block-achievement-statistic/all');
+  //trigger click on radio instanti
+    $(document).on('ifChecked ifUnchecked', '[name="chosen_institution[]"]', function() {         
+      var vins = institutionFilter()
+      $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
+      $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+      $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
+      $('#select_all').iCheck('uncheck');
+      alert ('asdsa')
+    });
 
+    $('#select_all').on('ifChecked', function(){
+      $('[name="chosen_institution[]"]').each(function(){
+        $(this).iCheck('check')
+      });
+    });
+
+
+  //load block statistic
+    $('#achievement-stat').load('/admin/data/block-achievement-statistic/default');
+
+  //init select2 &&  icheck
     $('.select2').select2();
+    $('input[type="checkbox"], input[type="radio"]').iCheck({
+      checkboxClass: 'icheckbox_flat-purple',
+      radioClass   : 'iradio_flat-purple'
+    });
 
   // init calendar for create new achievement
     $('#achievement_date').calendarsPicker({
@@ -59,7 +81,7 @@
     });
 
 
-    $('[name="chosen_institution[]"]').iCheck('check');
+    // $('[name="chosen_institution[]"]').iCheck('check');
 
 
 
@@ -74,6 +96,8 @@
       if ( ins.length == 0 ){ vins = '0' } else { vins = ins.join('_')}
       return vins;
     };
+
+
 
 
     /*

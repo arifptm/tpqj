@@ -30,13 +30,17 @@ class AchievementController extends Controller
         return $ui;
     }
 
+
+
+
+
     public function index(){
     	$stages = Stage::orderBy('id','asc')->get();
     	$students = Student::active()->whereIn('institution_id', $this->userInstitutions());
 
         $md_ins = new Institution;
         $institutions = $md_ins->filtered()->whereHas('student', function($q){$q->whereHas('achievement');})->get();
-        $userInstitutions = Institution::whereIn('id',$this->userInstitutions())->get();
+        $userInstitutions = Institution::whereIn('id',$this->userInstitutions())->pluck('id')->toArray();
 
         $sts =[];
         if($students->count() > 0){
@@ -45,7 +49,7 @@ class AchievementController extends Controller
     	   }    
     	}    
 
-    	return view('admin.achievement.index',['stages'=>$stages, 'students'=>$sts, 'institutions'=> $institutions]);
+    	return view('admin.achievement.index',['stages'=>$stages, 'students'=>$sts, 'institutions'=> $institutions, 'ui'=> $userInstitutions]);
     }
 
     
@@ -54,30 +58,26 @@ class AchievementController extends Controller
 
     public function achievementStatistic($ins){
 
-        $institutions = Institution::filtered()->whereHas('student', function($q){$q->whereHas('achievement');})->get();
-
-        if ($ins == 'all'){
-            // $ins = Institution::pluck('id')->toArray();
-            // $ins = implode('_', $ins);
-            $ins ="";
+        if ($ins == 'default'){
+            $ins = implode('_', $this->userInstitutions());
         }
 
         $ins = explode('_', $ins);
 
-        //$achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) use ($ins) {$q->whereIn('institution_id',$ins); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
+        $achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) use ($ins) {$q->whereIn('institution_id',$ins); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
 
-        $achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) {$q->headed(); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
+        //$achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) {$q->headed(); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
         
-        return view('admin.achievement.block-statistic', ['achievements'=>$achievements, 'institutions'=>$institutions]);
+        return view('admin.achievement.block-statistic', ['achievements'=>$achievements]);
     }
 
 
 
-    public function indexData($ins=null, $stg=null){
-        if ($ins == 'all'){
-            $ins = Institution::pluck('id')->toArray();
-            $ins = implode('_', $ins);
+    public function indexData($ins, $stg){
+        if ($ins == 'default'){
+            $ins = implode('_', $this->userInstitutions());
         }
+        
         if ($stg == 'all'){
             $stg = Stage::pluck('id')->toArray();
             $stg = implode('_', $stg);
