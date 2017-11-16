@@ -11,11 +11,10 @@
     //ins =def ; all = stage ; group = tpqa/d
     ajax: '/data/achievements/default/all/group',  
     columns: [
-      { data: 'id', name: 'id', searchable: false, "visible": false },
-      
-      { data: 'fdate', name: 'achievement_date'},          
-      
+      { data: 'id', name: 'id', searchable: false, "visible": false },      
+      { data: 'fdate', name: 'achievement_date'},                
       { data: 'fname', name: 'student.fullname'}, 
+      // { data: 'stu', name: 'student.fullname'}, 
       { data: 'stage.name', name: 'achievement.stage.name', searchable: false},       
       // { data: 'famount', name: 'amount', orderable: false, searchable: false},       
       // { data: 'notes', name: 'notes',  defaultContent: '...'},       

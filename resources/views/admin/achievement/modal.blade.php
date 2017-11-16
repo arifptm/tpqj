@@ -7,7 +7,7 @@
             </div>   
                <div class="modal-body">
                   <div class="alert bg-green lead" style='display:none;'><i class="icon fa fa-check"></i> <span id="modalmessage"></span></div>
-                  <form id='myForm' role='form' >         
+                  <form id='achievementForm' role='form' >         
                      @include('admin.achievement.fields') 
                   </form> 
                </div>   
