@@ -1,19 +1,22 @@
 <script>
-
-  //trigger click on radio instanti
-    $(document).on('ifChecked ifUnchecked', '[name="chosen_institution[]"]', function() {         
+  //trigger click on radio institution
+    $(document).on('ifToggled', '[name="chosen_institution[]"]', function() {
       var vins = institutionFilter()
-      $datatable.ajax.url( '/data/achievements/'+vins+'/all' ).load();
-      $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
+      $datatable.ajax.url( '/data/achievements/'+vins+'/all/group' ).load();      
       $('#achievement-stat').load('/admin/data/block-achievement-statistic/'+vins);
-      $('#select_all').iCheck('uncheck');
-      alert ('asdsa')
     });
 
-    $('#select_all').on('ifChecked', function(){
+    $('#select_all').on('click', function(){
       $('[name="chosen_institution[]"]').each(function(){
-        $(this).iCheck('check')
+         $(this).iCheck('check')
       });
+    });
+
+    $(document).on('click', '.show-arc', function(){
+      vins = $(this).data('institution_id')
+      stg = $(this).data('stage_id')
+      group = $(this).data('group')
+      $datatable.ajax.url( '/data/achievements/'+vins+'/'+stg+'/'+group ).load()
     });
 
 
@@ -79,13 +82,6 @@
        $('#achievement_date').val(gcn.formatDate('dd-mm-yyyy'))
        $('#acda_alt').val(gcn.formatDate('yyyy-mm-dd'))
     });
-
-
-    // $('[name="chosen_institution[]"]').iCheck('check');
-
-
-
-
 
     
     function institutionFilter(){

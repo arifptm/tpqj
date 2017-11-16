@@ -7,7 +7,7 @@
 @section('content')
 <div class="register-box">
   <div class="register-logo">
-   <a href="/"><b>Qiraati</b> Jogja</a>
+   <a href="/"><b>Qiraati</b> DIY</a>
   </div>
 
   <div class="register-box-body">

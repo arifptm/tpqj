@@ -110,7 +110,7 @@ Route::get('data/i-achievements','DashboardController@institutionAchievement');
 
 Route::get('data/almaruf-transactions/{arg}','admin\AlmarufTransactionController@indexData');
 
-Route::get('data/achievements/{ins}/{stg}', [ 'uses'=>'admin\AchievementController@indexData' ]);
+Route::get('data/achievements/{ins}/{stg}/{group}', [ 'uses'=>'admin\AchievementController@indexData' ]);
 
 Route::get('data/student/{student_id}', 'admin\StudentController@student');
 Route::get('data/student-achievements/{student_id}', 'admin\StudentController@studentAchievements');

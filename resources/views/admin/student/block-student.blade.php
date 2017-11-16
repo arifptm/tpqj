@@ -29,7 +29,7 @@
                 @endif</a>
           </li>
           <li class="list-group-item">
-            <b>Kelompok</b> <span class="pull-right">{{ $student->group->description }}</span>
+            <b>TPQ</b> <span class="pull-right">{{ $student->institution->name }}</span>
           </li>
         </ul>
         <a href="/admin/students/{{$student->id}}/edit" class="btn btn-sm btn-block btn-primary"><b>Update data siswa</b></a>

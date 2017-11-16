@@ -8,7 +8,8 @@
     autoWidth   : false,
     pageLength: 20,
     order: [ 0, "desc" ],
-    ajax: '/data/achievements/default/all',  
+    //ins =def ; all = stage ; group = tpqa/d
+    ajax: '/data/achievements/default/all/group',  
     columns: [
       { data: 'id', name: 'id', searchable: false, "visible": false },
       

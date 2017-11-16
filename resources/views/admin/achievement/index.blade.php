@@ -69,7 +69,7 @@
   <div class="col-md-4">
     <div class="box box-primary" style="min-height: 100px;">
       <div class="box-header">
-        <h3 class="box-title">Jumlah santri per kelas
+        <h3 class="box-title">Jumlah santri per kelas 
           @if (Auth::user()->institution->count() == 1 )
             : <b>TPQ {{ Auth::user()->institution[0]->name }}</b>
           @endif
@@ -82,17 +82,17 @@
         ">
           <div class="row">
             <div class="icheck"> 
+              <div class="col-md-6">
+                <button id="select_all" class="btn btn-xs bg-green">PILIH SEMUA</button>
+              </div>
               @foreach ($institutions->chunk(1) as $chunk)            
                 @foreach ($chunk as $institution)
                   <div class="col-md-6">
-                    <input value="{{$institution->id}}" id="{{$institution->slug}}" type="checkbox" name="chosen_institution[]" {{ (in_array($institution->id, $ui)) ? "checked" : "" }}>
+                    <input value="{{$institution->id}}" id="{{$institution->slug}}" type="checkbox" name="chosen_institution[]" {{ (in_array($institution->id, $ui)) ? "checked" : "" }} >
                     {!! Form::label( $institution->slug, $institution->name , ['class'=>'control-label']) !!}<br>
                   </div>  
                 @endforeach           
               @endforeach
-              <div class="col-md-6">
-                <input type="checkbox" id="select_all"> <b>PILIH SEMUA</b>
-              </div>
             </div>        
           </div>
         </div>
