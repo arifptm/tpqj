@@ -7,7 +7,7 @@
       <th class="text-right">Jumlah</th>
     </tr>
     @foreach($achievements as $k=>$achievement)
-      @if($achievement['stage_id'] != 19 AND $achievement['stage_id'] != 21)
+      @if($achievement['stage_id'] != 20 AND $achievement['stage_id'] != 23)
       <tr>
         <td>
           {{ $achievement['stage'] }}

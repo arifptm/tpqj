@@ -24,7 +24,8 @@
                     <span data-toggle="tooltip" title="{{ $achievements[$key]->notes }}"> <i class="fa fa-info-circle"></i></span>
                   @endif
                 </td>
-                <td>{{ $achievements[$key]->duration }} </td>    
+                <td>{{ $achievements[$key]->duration or '---'}} </td>   
+
                 <td class="text-center">
                   <div class="dropdown">
                     <a href="#" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></a>

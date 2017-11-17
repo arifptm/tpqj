@@ -82,7 +82,7 @@
         parseInt(dt[2], 10),
         parseInt(dt[1], 10),
         parseInt(dt[0], 10)
-      ).toJD();
+      ).toJD(); 
 
     var gcn = $.calendars.instance('islamic').fromJD(d);
       $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))

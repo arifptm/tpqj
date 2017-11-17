@@ -18,7 +18,7 @@ use App\TransactionType;
 
 use App\Achievement;
 
-
+use DB;
 use Auth;
 
 
@@ -148,24 +148,29 @@ class StudentController extends Controller
 
     public function studentAchievements($id){
         $registered = Carbon::parse(Student::find($id)->registered_date);
+        $today = Carbon::today();
         
-        $achievements = Achievement::whereStudent_id($id)->with('stage')->orderBy('stage_id','asc')->get();
-        if ($achievements->count() > 0 ) {
-            $dur = $achievements[0]->achievement_date;
+        $achievements = Achievement::join('stages', 'achievements.stage_id', '=', 'stages.id')
+            ->select('achievements.*')
+            ->whereStudent_id($id)->orderBy('stages.weight','asc')->get();
+        $cnt = $achievements->count();
+        
+        $before = $achievements[0]->achievement_date;
+        $after ='';
 
-            $a_dur = $achievements->each(function($item,$key) use(&$dur, $registered){
-                if($key == 0){
-                    $item->setAttribute('duration', $item->achievement_date->diff($registered)->format('%m bl + %d hr'));
-                } else {
-                    $item->setAttribute('duration', $item->achievement_date->diff($dur)->format('%m bl + %d hr'));
-                }
-                $dur = $item->achievement_date;
-            });        
-        } else {
-            $a_dur = [''];
-        }
+        $achievements->each(function($item,$key) use(&$before, $registered, $today, $cnt){
+            if($key == 0){                    
+                if($cnt == 1){
+                    $item->setAttribute('duration', $today->diff($registered)->format('%m bl + %d hr'));
+                }                 
+            } else {
+                $item->setAttribute('duration', $item->achievement_date->diff($before)->format('%m bl + %d hr'));
+            }
+            $before = $item->achievement_date;
+        });        
+
         
-         return view('admin.student.block-achievements',['achievements'=>$achievements]);
+        return view('admin.student.block-achievements',['achievements'=>$achievements]);
     }
 
 

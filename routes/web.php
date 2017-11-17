@@ -172,15 +172,16 @@ Route::get('/setroles', function(){
 	});
 
 	Route::get('/tes', function(){
-		
 
+        $a = App\Achievement::join('stages', 'achievements.stage_id', '=', 'stages.id')
+        ->select('achievements.*')
+        ->whereStudent_id(2027)->orderBy('stages.weight','asc')->get();
 		
-		$has_achievement = App\Achievement::where('student_id', 2022)->where('stage_id','!=',22)->get();
-        if($has_achievement->count()){
-        	return "kosong";
-        } else {
-        	return "hapus dong";
-        }
-	
+        // $b->each(function($item){
+        // 	$item->setAttribute('asd','asdas');
+        // });
+		 
+
+		dd($a);
 
 	});
