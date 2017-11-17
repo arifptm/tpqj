@@ -55,7 +55,7 @@
                      </div>  
                   </div>            
 
-                  {!! Form::hidden('id',null,['id'=>'id']) !!}
+                  {!! Form::hidden('id',null,['id'=>'achievement_id']) !!}
                   {!! Form::hidden('student_id', $student->id ,['id'=>'stid']) !!}
                   
                </form> 

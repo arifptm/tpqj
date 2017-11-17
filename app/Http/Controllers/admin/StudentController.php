@@ -66,6 +66,14 @@ class StudentController extends Controller
         }
 
         $student = Student::create($input);
+        
+        $achievement['stage_id'] = 22; //new student as 'santri baru'
+        $achievement['achievement_date'] = $request->registered_date;
+        $achievement['student_id'] = $student->id;
+        $achievement['is_latest'] = 1;
+
+        Achievement::create($achievement);
+
         return response()->json(['fullname' => $student->fullname]);
     }
 
@@ -85,8 +93,24 @@ class StudentController extends Controller
     public function ajaxDelete(Request $request)
     {
         $student = Student::findOrFail($request->id);
+        
+        $has_achievement = Achievement::where('student_id', $request->id)->where('stage_id','!=',22)->get();
+        $has_transaction = AlmarufTransaction::where('student_id', $request->id)->get();
+
+        if($has_transaction->count()){
+            $message = "Siswa tidak bisa dihapus karena mempunyai data transaksi.";
+            return response()->json(['message'=>$message]);
+        }
+
+        if($has_achievement->count()){
+            $message = "Siswa tidak bisa dihapus karena mempunyai data kelulusan.";
+            return response()->json(['message'=>$message]);
+        }
+
         $student->delete();
-        return response()->json(['message'=>'Data santri berhasil dihapus.']);
+        $message = "Data santri berhasil dihapus.";
+        
+        return response()->json(['message'=>$message]);
     }
 
 

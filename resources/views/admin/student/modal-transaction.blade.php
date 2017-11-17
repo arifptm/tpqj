@@ -73,7 +73,7 @@
                            </div>
 
                         </div>
-                        {!! Form::hidden('id', null, ['id'=>'id']) !!}
+                        {!! Form::hidden('id', null, ['id'=>'transaction_id']) !!}
                         {!! Form::hidden('student_id', $student->id ,['id'=>'stid']) !!}
                         {!! Form::hidden('credit', null, ['id'=>'credit']) !!}
 

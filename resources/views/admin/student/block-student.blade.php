@@ -5,6 +5,7 @@
           <img class="img-circle img-responsive profile-user-img" src="/imagecache/medium_sq/default.jpg" alt="">
         @endif
         <h3 class="profile-username text-center">{{$student->fullname}}</h3>
+        <h5 class="text-center"><b>(Santri {{ $student->group->description }})</b></h5>
         <h5 class="text-center">{{ $student->address }}</h5>
         <ul class="list-group list-group-unbordered">          
           <li class="list-group-item">

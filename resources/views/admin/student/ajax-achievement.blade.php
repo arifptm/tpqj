@@ -67,7 +67,7 @@
     $('.modal-title').text('Edit kelulusan');
     $('.achievement-modal').attr('id','modal-update-achievement');
 
-    $('#id').val($(this).data('id'));
+    $('#achievement_id').val($(this).data('id'));
     $('#achievement_date').val($(this).data('achievement_date'));
     $('#notes').val($(this).data('notes')); 
     

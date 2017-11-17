@@ -6,7 +6,8 @@
       <th class="text-right">TPQD</th>
       <th class="text-right">Jumlah</th>
     </tr>
-    @foreach($achievements as $achievement)
+    @foreach($achievements as $k=>$achievement)
+      @if($achievement['stage_id'] != 19 AND $achievement['stage_id'] != 21)
       <tr>
         <td>
           {{ $achievement['stage'] }}
@@ -35,12 +36,16 @@
           @else - @php ($ct[]='0') @endif   
         </td>
       </tr>
-    @endforeach                
+      @endif
+    
+    @endforeach  
+                     
     <tr class='bg-blue'>
       <th>Jumlah Total</th>
       <th class="text-right">{{ array_sum($ca) }}</th>
       <th class="text-right">{{ array_sum($cd) }}</th>
       <th class="text-right">{{ array_sum($ct) }}</th>
     </tr>  
+
   </table>            
 </div>

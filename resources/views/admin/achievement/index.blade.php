@@ -54,8 +54,9 @@
             <tr>              
               <th>ID</th>          
               <th>Tgl Lulus</th>
-              <th>Nama Santri</th>          
-              <th>Kelas</th>              
+              <th>Lulus</th>
+              <th>Nama Santri</th>                        
+              <th>Lembaga</th>
               <th>Aksi</th>          
             </tr>
           </thead>

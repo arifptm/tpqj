@@ -166,22 +166,22 @@
     var datedata = $(this).data('achievement_date')
     $('#achievement_date').val(datedata);    
     
-    // var dt = datedata.split('-')
+    var dt = datedata.split('-')
 
-    // $('#acda.alt').val(dt[2]+dt[1]+dt[0])
+    $('#acda.alt').val(dt[2]+dt[1]+dt[0])
 
-    // var gc = $.calendars.instance('gregorian');
-    // var d = gc.newDate(
-    //   parseInt(dt[2], 10),
-    //   parseInt(dt[1], 10),
-    //   parseInt(dt[0], 10)).toJD();
+    var gc = $.calendars.instance('gregorian');
+    var d = gc.newDate(
+      parseInt(dt[2], 10),
+      parseInt(dt[1], 10),
+      parseInt(dt[0], 10)).toJD();
 
-    // var gcn = $.calendars.instance('islamic').fromJD(d);
-    // $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
-    // $('#achida_alt').val(gcn.formatDate('yyyy-mm-dd'))
+    var gcn = $.calendars.instance('islamic').fromJD(d);
+    $('#achievement_hijri_date').val(gcn.formatDate('dd-mm-yyyy'))
+    $('#achida_alt').val(gcn.formatDate('yyyy-mm-dd'))
 
     //fill student id
-    $('#student_id').val($(this).data('student_id')).trigger();
+    $('#student_id').val($(this).data('student_id')).select2();
     var tr_value = $(this).data('stage_id')
     $('input[name="stage_id"][value='+tr_value+']').iCheck('check');
     
@@ -192,10 +192,10 @@
 
 
 $(document).on('click', '#submit-update', function(e) {      
-    var form = $('#achievementForm');
+    var form = $('#achievementForm')[0];
     var formData = new FormData(form);
     $.ajax({
-      url: '/admin/achievements/ajax/create',
+      url: '/admin/achievements/ajax/update',
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       },
@@ -217,8 +217,8 @@ $(document).on('click', '#submit-update', function(e) {
         
         clearForm();          
 
-        $('#modal-create-achievement').modal('hide');
-        $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil disimpan.').parent().slideDown();          
+        $('#modal-edit-achievement').modal('hide');
+        $('#ajaxmessage').html('Data kelulusan <strong>' +response.achievement.student.fullname+ '</strong> (' +response.achievement.stage.name+ ') berhasil diperbarui.').parent().slideDown();          
       }
     });
   });
@@ -249,8 +249,6 @@ $(document).on('click', '#submit-update', function(e) {
           
           success: function(data) {              
             $('#ajaxmessage').html(data.message).parent().slideDown();
-            //$('#students-data').DataTable().ajax.reload();
-            //location.reload();
             var vins = institutionFilter()
             $datatable.ajax.url( '/data/achievements/'+vins+'/all/group' ).load();
             $('#show-arc, #btn-modal-edit').attr('data-institution_id', vins);
@@ -267,9 +265,9 @@ $(document).on('click', '#submit-update', function(e) {
     });
 
     function clearForm(){
-      $('#myForm').find('input,select').not('[name=stage_id]').val('');
-      $('#myForm .select2').val(null).trigger("change");
-      $('#myForm').find('[name=stage_id]').iCheck('uncheck')  
+      $('#achievementForm').find('input,select').not('[name=stage_id]').val('');
+      $('#achievementForm .select2').val(null).trigger("change");
+      $('#achievementForm').find('[name=stage_id]').iCheck('uncheck')  
       $('#modalmessage').parent().hide();      
     }
 

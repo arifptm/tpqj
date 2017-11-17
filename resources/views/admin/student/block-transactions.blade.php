@@ -27,7 +27,7 @@
                       <a href="#" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></a>
                       <div class="dropdown-menu dropdown-menu-right">
                         <div class="btn-group">
-                          <button id='btn-modal-edit' class='btn btn-sm'                  
+                          <button class='btn btn-sm edit-transaction'                  
                             data-id = '{{ $transaction->id }}'
                             data-transaction_date = '{{ $transaction->transaction_date }}'
                             data-transaction_type_id = '{{ $transaction->transaction_type_id }}'  
@@ -36,12 +36,11 @@
                             data-class_group_id='{{ $transaction->class_group_id }}' 
                             data-amount='{{ $transaction->amount }}' 
                             data-notes='{{ $transaction->notes }}' >
-                            <i class='glyphicon glyphicon-edit'></i>
-                          </button>
-                      
                             <i class='glyphicon glyphicon-edit'></i> Edit
+                          </button>                      
+
                           </button>
-                          <button id='btn-delete-institution' class='btn btn-danger btn-sm ' data-id="">
+                          <button id='btn-delete-transaction' class='btn btn-danger btn-sm ' data-id="{{ $transaction->id }}">
                             <i class='glyphicon glyphicon-trash'></i> Hapus
                           </button>                        
                         </div>

@@ -35,8 +35,8 @@ class AchievementController extends Controller
 
 
     public function index(){
-    	$stages = Stage::orderBy('id','asc')->get();
-    	$students = Student::active()->whereIn('institution_id', $this->userInstitutions());
+    	$stages = Stage::option()->orderBy('id','asc')->get();
+    	$students = Student::active()->whereIn('institution_id', $this->userInstitutions())->orderBy('fullname', 'asc'); //for option when add/edit
 
         $md_ins = new Institution;
         $institutions = $md_ins->filtered()->whereHas('student', function($q){$q->whereHas('achievement');})->get();
@@ -52,7 +52,6 @@ class AchievementController extends Controller
     	return view('admin.achievement.index',['stages'=>$stages, 'students'=>$sts, 'institutions'=> $institutions, 'ui'=> $userInstitutions]);
     }
 
-    
 
 
     public function achievementStatistic($ins){
@@ -82,27 +81,38 @@ class AchievementController extends Controller
         ->get()
         ->groupBy('stage_id');  
 
-        $stages = Stage::all();
-        foreach($stages as $stage){
-            $key = $stage->id;
-            
-            $achievement[$key]['stage_id'] = $key;
-            $achievement[$key]['stage'] = $stage->name;
+        
 
+
+        $stages = Stage::orderBy('weight', 'asc')->get();
+        
+        foreach($stages as $k=>$stage){
+            $key = $stage->id;                
+            $achievement[$k]['stage_id'] = $key;
+            
+            if($k > 0){
+                $achievement[$k-1]['stage'] = $stage->name;                
+            }
+
+            if($k > 20){
+                $achievement[$k]['stage'] = '';
+            }
+            
             if(isset($tpqa_a[$key])){
-                $achievement[$key]['tpqa'] = $tpqa_a[$key]->count();
+                $achievement[$k]['tpqa'] = $tpqa_a[$key]->count();
             } else {
-                $achievement[$key]['tpqa'] = 0;
+                $achievement[$k]['tpqa'] = 0;
             }
 
             if(isset($tpqd_a[$key])){
-                $achievement[$key]['tpqd'] = $tpqd_a[$key]->count();
+                $achievement[$k]['tpqd'] = $tpqd_a[$key]->count();
             } else {
-                $achievement[$key]['tpqd'] = 0;
-            }
+                $achievement[$k]['tpqd'] = 0;
+            } 
+        
         }
 
-        // dd($achievement);
+         // dd($achievement); 
 
         //$achievements = Achievement::activeStudent()->where('is_latest','=', 1)->whereHas('student', function($q) {$q->headed(); })->with('student','stage')->orderBy('stage_id')->get()->groupBy('stage_id');
         
@@ -136,7 +146,7 @@ class AchievementController extends Controller
             ->whereHas('student', function($q) use ($group){ $q->whereIn('group_id', $group); })
             ->whereHas('student', function($q) use($ins){ $q->whereIn('institution_id', $ins); })
             ->whereIn('achievements.stage_id', $stg)
-            ->with(['student', 'stage'])->whereIs_latest('1')->activeStudent();
+            ->with(['student','student.institution', 'stage'])->whereIs_latest('1')->activeStudent();
             
         // }
 
@@ -145,18 +155,36 @@ class AchievementController extends Controller
                 $name = $achievement->student->fullname;
                 $nname = $achievement->student->nickname;
                 $slug = $achievement->student->slug;
-                return "<a href='/admin/students/$slug'><b>".str_limit($name,15,'~')."</b></a>/$nname";
+                $tpqd = $notes = '';
+                if($achievement->student->group_id == 3){
+                    $tpqd = "<i data-toggle='tooltip' title='Santri Dewasa' class='fa fa-user text-green'></i>";
+                }
+                if($achievement->notes != ''){
+                    $notes = "<i data-toggle='tooltip' title='$achievement->notes' class='fa fa-info-circle text-warning'></i>";
+                }
+                return "<a href='/admin/students/$slug'><b>".str_limit($name,15,'~')."</b></a>/$nname ".$tpqd." ".$notes;
             })
 
             ->addColumn('fdate', function($achievement){                
                 return $achievement->achievement_date->format('d-m-Y');
             })
 
+            // ->addColumn('current_stage', function($achievement){
+            //     $s = new Stage;
+            //     $passed_stage = $s->where('id',$achievement->stage_id)->first();
+            //     $current = $s->where('weight','>', $passed_stage->weight)->first();
+            //     return $current->name;
+            // })
+
+ 
+
+
             ->addColumn('actions', function($achievement){                
                 $odate = $achievement->achievement_date->format('d-m-Y');
+                $new_student = ($achievement->stage_id == 22 AND $achievement->is_latest == 1 ) ? 'disabled' : '';
                 return "                
                 <div class='btn-group'>
-                    <button id='btn-modal-edit' class='btn btn-default btn-xs'
+                    <button id='btn-modal-edit' class='btn btn-default btn-xs'  " . $new_student . " 
                         data-id = '$achievement->id' 
                         data-student_id = '$achievement->student_id' 
                         data-stage_id = '$achievement->stage_id' 
@@ -164,7 +192,7 @@ class AchievementController extends Controller
                         data-notes='$achievement->notes'>
                         <i class='glyphicon glyphicon-edit'></i>
                     </button>
-                    <button id='btn-delete-achievement' class='btn btn-danger btn-xs' data-id='$achievement->id'>
+                    <button id='btn-delete-achievement' " . $new_student . " class='btn btn-danger btn-xs' data-id='$achievement->id'>
                         <i class='glyphicon glyphicon-trash'></i>
                     </button>
                 </div>
@@ -186,17 +214,22 @@ class AchievementController extends Controller
 
 
     public function ajaxCreate(CreateAchievement $request){    
-        $input = $request->only(['student_id','stage_id','notes']);      
-        //$achievement_date = explode('-', $request->achievement_date);        
-        // $input['achievement_date'] = $achievement_date[2].'-'.$achievement_date[1].'-'.$achievement_date[0];
+        $input = $request->only(['student_id','stage_id','notes']);        
         $input['achievement_date'] = $request->acda_alt;
 
-        //$processed_student = Achievement::where('student_id', '=', $request->student_id);
-        $latest_stage = Achievement::where('student_id', '=', $request->student_id)->orderBy('stage_id','desc')->first();
-        if ($latest_stage == null){            
+        $stage_weight_request = Stage::where('id', $request->stage_id)->first();
+
+        $stage_weight_latest_in_db = DB::table('achievements')
+        ->join('stages', 'achievements.stage_id' ,'=', 'stages.id')
+        ->where('achievements.student_id', $request->student_id)
+        ->select('achievements.id', 'stages.weight')
+        ->orderBy('stages.weight', 'desc')
+        ->first();
+
+        if ($stage_weight_latest_in_db == null){
             $input['is_latest'] = 1;
         } else {
-            if ( $request->stage_id  > $latest_stage->stage_id ){
+            if ( $stage_weight_request->weight  > $stage_weight_latest_in_db->weight ){
                 Achievement::where('student_id', '=', $request->student_id)->update(['is_latest'=>  0 ]);      
                 $input['is_latest'] = 1;            
             }  else {
@@ -222,12 +255,19 @@ class AchievementController extends Controller
         
         $achievement->update($input);
         
-        $chosen = Achievement::where('student_id', '=', $request->student_id);
-        $reset = $chosen->update(['is_latest'=>0]);
+        Achievement::where('student_id', '=', $request->student_id)->update(['is_latest'=>0]);
 
-        $latest_stage_id = $chosen->orderBy('stage_id', 'desc')->first()->stage_id;
+        $latest_stage_id = DB::table('achievements')
+        ->join('stages', 'achievements.stage_id', '=', 'stages.id')
+        ->select('achievements.id')
+        ->where('achievements.student_id', $request->student_id)
+        ->orderBy('stages.weight','desc')
+        ->take(1)
+        ->get()
+        ->first()
+        ->id;
 
-        $chosen->where('stage_id', $latest_stage_id)->update(['is_latest'=>1]);
+        Achievement::where('id', $latest_stage_id)->update(['is_latest'=>1]);
 
         return response()->json(['achievement' => $achievement->load('student','stage')]);
     }    

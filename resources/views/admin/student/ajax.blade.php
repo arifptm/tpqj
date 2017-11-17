@@ -104,6 +104,7 @@
 
         success: function(response){
           $('#students-data').DataTable().ajax.reload();
+          $('#student-stat').load('/admin/data/block-student-statistic');
           $('.fullname, .nickname, .institution_id, .gender, .group_id' ).hide().parent().removeClass('has-error');      
           $('#myForm').find('input,textarea,select').not('#image, [name=gender],[name=status],[name=group_id]').val('');
           $('#myForm').find('[name=gender],[name=status],[name=group_id]').iCheck('uncheck')
@@ -234,6 +235,8 @@
           success: function(data) {              
             $('#ajaxmessage').html(data.message).parent().slideDown();
             $('#students-data').DataTable().ajax.reload();
+            $('#student-stat').load('/admin/data/block-student-statistic');
+
           }
         });
       }

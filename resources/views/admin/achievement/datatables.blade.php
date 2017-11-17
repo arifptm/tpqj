@@ -13,9 +13,12 @@
     columns: [
       { data: 'id', name: 'id', searchable: false, "visible": false },      
       { data: 'fdate', name: 'achievement_date'},                
+      { data: 'stage.name', name: 'achievement.stage.name', searchable: false, orderable: false},       
       { data: 'fname', name: 'student.fullname'}, 
-      // { data: 'stu', name: 'student.fullname'}, 
-      { data: 'stage.name', name: 'achievement.stage.name', searchable: false},       
+      { data: 'student.institution.name', name: 'student.fullname'}, 
+      
+      //{ data: 'current_stage', name: 'current_stage', searchable: false},       
+      
       // { data: 'famount', name: 'amount', orderable: false, searchable: false},       
       // { data: 'notes', name: 'notes',  defaultContent: '...'},       
       { data: 'actions', name: 'actions', orderable: false, searchable: false}

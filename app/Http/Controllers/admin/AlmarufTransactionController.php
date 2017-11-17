@@ -173,7 +173,14 @@ class AlmarufTransactionController extends Controller
                 $name = $transaction->student->fullname;
                 $nname = $transaction->student->nickname;
                 $slug = $transaction->student->slug;
-                return "<a href='/admin/students/$slug'><b>".str_limit($name,15,'~')."</b></a>/$nname";
+                $tpqd = $notes = '';
+                if($transaction->student->group_id == 3){
+                    $tpqd = "<i data-toggle='tooltip' title='Santri Dewasa' class='fa fa-user text-green'></i>";
+                }
+                if($transaction->notes != ''){
+                    $notes = "<i data-toggle='tooltip' title='$transaction->notes' class='fa fa-info-circle text-warning'></i>";
+                }
+                return "<a href='/admin/students/$slug'><b>".str_limit($name,15,'~')."</b></a>/$nname $tpqd $notes";
             })
 
             ->addColumn('famount', function($transaction){

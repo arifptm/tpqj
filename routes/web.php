@@ -129,11 +129,6 @@ Route::post('upload','TesController@upload');
 Route::get('/convert/togregorian/{hijri}','HijriController@toGregorian');
 
 
-
-//Route::get('tes','InstitutionController@tes');
-Route::get('tes','TesController@tes');
-
-
 Route::get('/setroles', function(){
 
 //Bouncer::disallow('admin')->to(['manage-class_groups']);
@@ -174,4 +169,18 @@ Route::get('/setroles', function(){
 		foreach ($s as $v) {
 			echo $v->fullname.",".$v->birth_place.",".optional($v->birth_date)->format('d-m-Y').",".$v->parent.",".$v->address."<br>";
 		}
+	});
+
+	Route::get('/tes', function(){
+		
+
+		
+		$has_achievement = App\Achievement::where('student_id', 2022)->where('stage_id','!=',22)->get();
+        if($has_achievement->count()){
+        	return "kosong";
+        } else {
+        	return "hapus dong";
+        }
+	
+
 	});
